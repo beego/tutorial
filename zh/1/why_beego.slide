@@ -1,0 +1,90 @@
+Beego的设计思路
+一个快速开发 Go 应用的 HTTP 框架
+20:00 10 May 2014
+Tags: beego
+
+astaxie
+http://github.com/astaxie
+http://weibo.com/533452688
+http://twitter.com/astaxie
+
+* 大纲
+- 为什么设计beego
+- beego可以用来做什么
+- beego要做成怎么样
+- beego的安装配置
+- beego的快速入门
+
+* 为什么设计beego
+
+1. 写书的时候想写一个框架
+
+2. 设计灵感主要来源于 tornado、sinatra 和 flask
+
+
+* beego可以用来做什么
+
+beego是一个http应用框架
+
+为何不是 web 而是 http 框架？
+
+适用于各种 http 服务，api服务，后端服务，游戏开发...
+
+* beego的特色
+
+- 高性能,是目前最快的Go框架
+- 开发快捷，组件多，高度解耦
+- 产品级广泛应用，360，weico，jd，opera ...
+- RESTful 方式，也可以自定义 action
+- 稳定，更新频繁，持续维护
+- 文档完整,在线解答
+
+* beego将来要做成怎么样
+
+- 高度模块化,把目前的几个模块做完善,同时开发一些新的模块
+- 轻内核框架,beego目前也是几个模块的组装,接下来更需要精简,MVC功能里面任何一个都做的都可以替换
+- 加强路由功能,兼容其他框架的服务,例如你可以开发一个Martini的模块,然后通过beego来调用
+- 增强bee工具,让开发变得更加自动化
+
+* beego的安装
+
+beego是一个框架,bee是一个开发工具,所以安装需要包括两个:
+
+	go get github.com/astaxie/beego
+	go get github.com/beego/bee
+
+* 安装中可能遇到的问题
+- 被墙
+- GOPATH设置
+- bee工具设置
+- git没有安装
+
+* 检测是否安装成功
+命令行输入 bee
+
+* beego快速入门
+
+	bee new beegoProject
+	
+
+	bee run watchall	
+	
+* 目录解析	 
+
+	.
+	|-- conf
+	|   `-- app.conf
+	|-- controllers
+	|   `-- default.go
+	|-- main.go
+	|-- models
+	|-- routers
+	|   `-- router.go
+	|-- static
+	|   |-- css
+	|   |-- img
+	|   `-- js
+	|-- tests
+	|   `-- default_test.go
+	`-- views
+	    `-- index.tpl
