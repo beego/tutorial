@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Zen of Beego</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>The Zen of Beego</h1>
+        <h3>A Go framework for developing HTTP application rapidly.</h3>
+        <h3>10 May 2014</h3>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    astaxie
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Content</h3>
+        
+  <ul>
+  
+    <li>Why do we design beego?</li>
+  
+    <li>What can beego do?</li>
+  
+    <li>Where will beego go?</li>
+  
+    <li>How to install and config beego?</li>
+  
+    <li>When should I start learning beego? Now!</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Why do we design beego?</h3>
+        
+  
+  <p>
+    1. I want to create a framework while I am writing this book.
+  </p>
+  
+<p class="link"><a href="https://github.com/astaxie/build-web-application-with-golang" target="_blank">Build Web Application with Golang</a></p>
+  
+  <p>
+    2. It is inspired by tornado, sinatra and flask.
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>What can beego do?</h3>
+        
+  
+  <p>
+    beego is a http application framework
+  </p>
+  
+
+  
+  <p>
+    Why it&#39;s called http framework other than web framework?
+  </p>
+  
+
+  
+  <p>
+    The reason is beego suit for any kinds of http service: api service, web backend, game development etc.
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s Key Features</h3>
+        
+  <ul>
+  
+    <li>High performance. The fastest Go framework</li>
+  
+    <li>Rapid development, lots of components, highly decoupled</li>
+  
+    <li>Tons of products. 360，weico，jd，opera ...</li>
+  
+    <li>RESTful model with customizable actions</li>
+  
+    <li>high stability, frequent update, continuous maintainace</li>
+  
+    <li>Good documents, online F&amp;Q</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Where will beego go?</h3>
+        
+  <ul>
+  
+    <li>Highly modular. Improve existent modules and develop more new modules</li>
+  
+    <li>Light core framework. beego is formed by modules now. Will make it even lighter. Any part of MVC can be replaced.</li>
+  
+    <li>Enhance routing, compating with other framework&#39;s service. For example you can create a module in Martini and call it in beego.</li>
+  
+    <li>Enhance bee tool. Automate the development even more.</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>How to install and config beego?</h3>
+        
+  
+  <p>
+    beego is the framework, bee is the developing tool.
+  </p>
+  
+
+  
+  <div class="code"><pre>go get github.com/astaxie/beego
+go get github.com/beego/bee</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Frequently happened problems:</h3>
+        
+  <ul>
+  
+    <li>Setting up GOPATH</li>
+  
+    <li>Setting up bee tool</li>
+  
+    <li>git is not installed</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Testing if installed sucessfully</h3>
+        
+  
+  <p>
+    Type bee in command line
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>When should I start learning beego? Now!</h3>
+        
+  
+  <div class="code"><pre>bee new beegoProject
+
+
+bee run watchall</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Directory explication</h3>
+        
+  
+  <div class="code"><pre>.
+|-- conf
+|   `-- app.conf
+|-- controllers
+|   `-- default.go
+|-- main.go
+|-- models
+|-- routers
+|   `-- router.go
+|-- static
+|   |-- css
+|   |-- img
+|   `-- js
+|-- tests
+|   `-- default_test.go
+`-- views
+    `-- index.tpl</pre></div>
+  
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    astaxie
+  </p>
+  
+<p class="link"><a href="http://github.com/astaxie" target="_blank">http://github.com/astaxie</a></p><p class="link"><a href="http://weibo.com/533452688" target="_blank">http://weibo.com/533452688</a></p><p class="link"><a href="http://twitter.com/astaxie" target="_blank">http://twitter.com/astaxie</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>
