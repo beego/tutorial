@@ -62,6 +62,22 @@ beego是一个框架,bee是一个开发工具,所以安装需要包括两个:
 * 检测是否安装成功
 命令行输入 bee
 
+	Bee is a tool for managing beego framework.
+	
+	Usage:
+	
+		bee command [arguments]
+	
+	The commands are:
+	
+	    new         create an application base on beego framework
+	    run         run the app which can hot compile
+	    pack        compress an beego project
+	    api         create an api application base on beego framework
+	    router      auto-generate routers for the app controllers
+	    test        test the app
+	    bale        packs non-Go files to Go source files
+
 * beego快速入门
 
 	bee new beegoProject
