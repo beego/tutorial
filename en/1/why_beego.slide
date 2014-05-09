@@ -3,10 +3,8 @@ A Go framework for developing HTTP application rapidly
 20:00 10 May 2014
 Tags: beego
 
-astaxie
-http://github.com/astaxie
-http://weibo.com/533452688
-http://twitter.com/astaxie
+Lei Cao
+http://github.com/lei-cao
 
 * Content
 - Why do we design beego?
@@ -17,7 +15,7 @@ http://twitter.com/astaxie
 
 * Why do we design beego?
 
-1. I want to create a framework while I am writing this book.
+1. Astaxie want to create a framework while he was writing his book.
 
 .link https://github.com/astaxie/build-web-application-with-golang Build Web Application with Golang
 
@@ -30,23 +28,23 @@ beego is a http application framework
 
 Why it's called http framework other than web framework?
 
-The reason is beego suit for any kinds of http service: api service, web backend, game development etc.
+The reason is beego suits for any kinds of http services: api services, web backend, game development etc.
 
 * beego's Key Features
 
-- High performance. The fastest Go framework
+- High performance. The fastest Go framework out there now.
 - Rapid development, lots of components, highly decoupled
 - Tons of products. 360，weico，jd，opera ...
 - RESTful model with customizable actions
 - high stability, frequent update, continuous maintainace
-- Good documents, online F&Q
+- Good documents, online FAQ
 
 * Where will beego go?
 
-- Highly modular. Improve existent modules and develop more new modules
-- Light core framework. beego is formed by modules now. Will make it even lighter. Any part of MVC can be replaced.
-- Enhance routing, compating with other framework's service. For example you can create a module in Martini and call it in beego.
-- Enhance bee tool. Automate the development even more.
+- Highly modular. Improving existent modules and developing more new modules
+- Light core framework. beego is formed by many modules now. Will make it even lighter. Any part of MVC can be replaced.
+- Enhance routing. Compating with other framework's service. For example you can create a module in Martini and call it in beego.
+- Enhance bee tool. Automating the development even more.
 
 * How to install and config beego?
 
