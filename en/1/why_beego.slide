@@ -7,11 +7,11 @@ Lei Cao
 http://github.com/lei-cao
 
 * Content
-- Why do we design beego?
-- What can beego do?
-- Where will beego go?
-- How to install and config beego?
-- When should I start learning beego? Now!
+- Why do we design *beego*?
+- What can *beego* do?
+- Where will *beego* go?
+- How to install and config *beego*?
+- When should I start learning *beego*? Now!
 
 * Why do we design beego?
 
@@ -24,11 +24,11 @@ http://github.com/lei-cao
 
 * What can beego do?
 
-beego is a http application framework
+*beego* is a http application framework
 
 Why it's called http framework other than web framework?
 
-The reason is beego suits for any kinds of http services: api services, web backend, game development etc.
+The reason is *beego* suits for any kinds of http services: api services, web backend, game development etc.
 
 * beego's Key Features
 
@@ -42,24 +42,24 @@ The reason is beego suits for any kinds of http services: api services, web back
 * Where will beego go?
 
 - Highly modular. Improving existent modules and developing more new modules
-- Light core framework. beego is formed by many modules now. Will make it even lighter. Any part of MVC can be replaced.
-- Enhance routing. Compating with other framework's service. For example you can create a module in Martini and call it in beego.
-- Enhance bee tool. Automating the development even more.
+- Light core framework. *beego* is formed by many modules now. Will make it even lighter. Any part of MVC can be replaced.
+- Enhance routing. Compating with other framework's service. For example you can create a module in Martini and call it in *beego*.
+- Enhance `bee` tool. Automating the development even more.
 
 * How to install and config beego?
 
-beego is the framework, bee is the developing tool.
+*beego* is the framework, *bee* is the developing tool.
 
 	go get github.com/astaxie/beego
 	go get github.com/beego/bee
 
 * Frequently happened problems:
-- Setting up GOPATH
-- Setting up bee tool
-- git is not installed
+- Setting up *GOPATH*
+- Setting up *bee* tool
+- *git* is not installed
 
 * Testing if installed sucessfully
-Type bee in command line
+Type `bee` in command line
 
 * When should I start learning beego? Now!
 
