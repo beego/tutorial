@@ -1,0 +1,1597 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego - The Missing Manual</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego - The Missing Manual</h1>
+        <h3>A Go framework for developing HTTP application rapidly</h3>
+        <h3>28 March 2014</h3>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    Lei Cao
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Overview</h3>
+        
+  
+  <p>
+    It is inspired by tornado, sinatra and flask.
+  </p>
+  
+
+  
+  <p>
+    Why it&#39;s called http framework other than web framework?
+  </p>
+  
+
+  
+  <p>
+    The reason is <b>beego</b> suits for any kinds of http services: api services, web backend, game development etc.
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s Key Features</h3>
+        
+  <ul>
+  
+    <li>High performance. The fastest Go framework out there now.</li>
+  
+    <li>Rapid development, lots of components, highly decoupled</li>
+  
+    <li>Tons of products. 360，weico，jd，opera ...</li>
+  
+    <li>RESTful model with customizable actions</li>
+  
+    <li>high stability, frequent update, continuous maintainace</li>
+  
+    <li>Good documents, online FAQ</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Quick Start</h3>
+        <p class="link"><a href="http://127.0.0.1:8080" target="_blank">127.0.0.1:8080</a></p>
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">import (</span>
+<span num="4">    &#34;github.com/astaxie/beego&#34;</span>
+<span num="5">)</span>
+<span num="6"></span>
+<span num="7">func main() {</span>
+<span num="8">    beego.Run()</span>
+<span num="9">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>bee as the scaffolding for developing beego projects</h3>
+        
+  
+  <div class="code"><pre>go get github.com/beego/bee</pre></div>
+  
+
+  
+  <p>
+    `bee new` to create a web project
+  </p>
+  
+
+  
+  <div class="code"><pre>cd $GOPATH/src
+bee new app
+app
+├── conf
+│   └── app.conf
+├── routers
+│   └── router.go
+├── controllers
+│   └── default.go
+└── views
+    └── index.tpl
+├── models
+├── static
+├── tests
+│   └── default_test.go
+├── main.go</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    `bee run` to run, watch and auto build project
+  </p>
+  
+
+  
+  <p>
+    Config file bee.json can suit for any Go project such as martini project
+  </p>
+  
+
+  
+  <div class="code"><pre>$ bee run
+14-03-26 02:09:58 [INFO] Uses &#39;app&#39; as &#39;appname&#39;
+14-03-26 02:09:58 [INFO] Initializing watcher...
+14-03-26 02:09:58 [TRAC] Directory(/project/qiniu/beego/src/app/controllers)
+14-03-26 02:09:58 [TRAC] Directory(/project/qiniu/beego/src/app/models)
+14-03-26 02:09:58 [TRAC] Directory(/project/qiniu/beego/src/app)
+14-03-26 02:09:58 [INFO] Start building...
+14-03-26 02:10:01 [SUCC] Build was successful
+14-03-26 02:10:01 [INFO] Restarting app ...
+14-03-26 02:10:01 [INFO] ./app is running...
+2014/03/26 02:10:01 [I] Running on :8080
+
+new         create an application base on beego framework
+run         run the app which can hot compile
+pack        compress an beego project
+api         create an api application base on beego framework
+router      auto-generate routers for the app controllers
+test        test the app
+bale        packs non-Go files to Go source files</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h2>Beego architecture</h2>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Congifuration</h3>
+        
+  
+  <p>
+    Reading ini config from conf/app.conf by default
+  </p>
+  
+
+  
+  <div class="code"><pre>httpaddr = &#34;127.0.0.1&#34;
+httpport = 9090
+runmode =&#34;dev&#34;</pre></div>
+  
+
+  
+  <div class="code"><pre>beego.AppConfig.String(&#34;runmode&#34;)</pre></div>
+  
+
+  
+  <p>
+    Independent from AppConfig, Beego&#39;s config can be overwrite completely.
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.HttpAddr = &#34;127.0.0.1&#34;
+beego.HttpPort = &#34;9080&#34;
+beego.RunMode = &#34;prod&#34;</pre></div>
+  
+
+  
+  <p>
+    Beego&#39;s configurations can be set by beego.xxx
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Router</h3>
+        
+  
+  <p>
+    Based on Go&#39;s net/http
+  </p>
+  
+
+  
+  <p>
+    As similar as http, the router configuration is defined in go file so the router can be dynamic.
+  </p>
+  
+
+<div class="image">
+  <img src="router.jpg">
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  <ul>
+  
+    <li>Fixed routers</li>
+  
+  </ul>
+
+  
+  <p>
+    I.E. fully matched router. Mapping to action based on the requested method name. It&#39;s a typical RESTful pattern.
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/admin&#34;, &amp;admin.UserController{})</pre></div>
+  
+
+  <ul>
+  
+    <li>Regex routers</li>
+  
+  </ul>
+
+  
+  <p>
+    Similar as *sinatra*&#39;s regex
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(“/news/:all”, &amp;controllers.RController{})
+this.Ctx.Input.Param(&#34;:all&#34;)
+
+beego.Router(“/api/:id([0-9]&#43;)“, &amp;controllers.RController{})
+this.Ctx.Input.Param(&#34;:id&#34;)
+
+beego.Router(“/download/*.*”, &amp;controllers.RController{})
+this.Ctx.Input.Param(&#34;:path&#34;)
+this.Ctx.Input.Param(&#34;:ext&#34;)
+
+beego.Router(“/download/ceshi/*“, &amp;controllers.RController{})
+this.Ctx.Input.Param(&#34;:splat&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  <ul>
+  
+    <li>Automatic routers</li>
+  
+  </ul>
+
+  
+  <p>
+    Mapping to controller based on the requested controller name and action name.
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.AutoRouter(&amp;controllers.ObjectController{})
+
+/object/login   Will map to Login method of ObjectController
+/object/logout  Will map to Logout method of ObjectController</pre></div>
+  
+
+  <ul>
+  
+    <li>Customized routers</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api/list&#34;,&amp;RestController{},&#34;*:ListFood&#34;)
+beego.Router(&#34;/api/create&#34;,&amp;RestController{},&#34;post:CreateFood&#34;)
+beego.Router(&#34;/api/update&#34;,&amp;RestController{},&#34;put:UpdateFood&#34;)
+beego.Router(&#34;/api/delete&#34;,&amp;RestController{},&#34;delete:DeleteFood&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  <ul>
+  
+    <li>Group routers</li>
+  
+  </ul>
+
+  
+  <p>
+    Mapping URL
+  </p>
+  
+
+  <ul>
+  
+    <li>/admin/login</li>
+  
+    <li>/admin/logout</li>
+  
+    <li>/admin/register</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>GR := beego.NewGroupRouters{}
+GR.AddRouter(&#34;/login&#34;, &amp;AuthControllers{}, &#34;get:Login&#34;)
+GR.AddRouter(&#34;/logout&#34;, &amp;AuthControllers{}, &#34;get:Logout&#34;)
+GR.AddRouter(&#34;/register&#34;, &amp;AuthControllers{}, &#34;get:Register&#34;)
+
+beego.AddGroupRouter(&#34;/admin&#34;, GR)
+beego.Run()</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Controller</h3>
+        
+  
+  <p>
+    Standard RESTFul action by default: Get Post Delete Put Head Patch Options
+  </p>
+  
+
+  
+  <p>
+    As well as customized action
+  </p>
+  
+
+<div class="image">
+  <img src="controller.jpg">
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Typical usage
+  </p>
+  
+
+  <ul>
+  
+    <li>Accessing Request and Response by Controller.Ctx</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>type BaseController struct {
+    beego.Controller
+}
+
+func (this *BaseController) Post() {
+    // get request data: get / post
+    value := this.GetString(&#34;name&#34;)
+    // return json data
+    this.Data[&#34;json&#34;] = map[string]string{
+        &#34;success&#34;: true,
+        &#34;data&#34;: value,
+    }
+    this.ServeJson()
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Filter</h3>
+        
+  
+  <p>
+    Hook system
+  </p>
+  
+
+  <ul>
+  
+    <li>BeforeRouter Before mapping router</li>
+  
+    <li>AfterStatic After rendering static</li>
+  
+    <li>BeforeExec After mapping router, before mapped Controller</li>
+  
+    <li>AfterExec After executing Controller</li>
+  
+    <li>FinishRouter After finishing router</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>var FilterUser = func(ctx *context.Context) {
+    _, ok := ctx.Input.Session(&#34;uid&#34;).(int)
+    if !ok &amp;&amp; ctx.Request.RequestURI != &#34;/login&#34; {
+        ctx.Redirect(302, &#34;/login&#34;)
+    }
+}
+
+beego.AddFilter(&#34;*&#34;,&#34;AfterStatic&#34;,FilterUser)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Template</h3>
+        
+  
+  <p>
+    Using Go&#39;s native template engine: html/template
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.ViewsPath = &#34;views&#34; // default template path is views</pre></div>
+  
+
+  
+  <p>
+    Using ViewsPath/ControllerName/method.tpl as default template file
+  </p>
+  
+
+  <ul>
+  
+    <li>Supporting standard layout mode</li>
+  
+    <li>Supporting LayoutSection</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>func (this *IndexController) Get() {
+    // Assigning template variable
+    this.Data[&#34;content&#34;] = &#34;value&#34;
+
+    // Specifying template
+    this.TplNames = &#34;index.html&#34;
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Untypical usage
+  </p>
+  
+
+  
+  <p>
+    base.html
+  </p>
+  
+
+  
+  <div class="code"><pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    {{template &#34;base/head.html&#34; .}}
+    {{template &#34;head&#34; .}}
+&lt;/head&gt;
+&lt;body id=&#34;front&#34;&gt;
+    &lt;div id=&#34;wrapper&#34;&gt;
+        {{template &#34;header&#34; .}}
+        &lt;div id=&#34;main&#34; class=&#34;container&#34;&gt;
+            {{template &#34;body&#34; .}}
+        &lt;/div&gt;
+    &lt;/div&gt;
+    {{template &#34;footer&#34; .}}
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    common.html
+  </p>
+  
+
+  
+  <div class="code"><pre>{{define &#34;head&#34;}}{{end}}
+{{define &#34;header&#34;}}
+    {{template &#34;base/navbar.html&#34; .}}
+{{end}}
+{{define &#34;footer&#34;}}
+    {{template &#34;base/foot.html&#34; .}}
+{{end}}</pre></div>
+  
+
+  
+  <p>
+    index.html
+  </p>
+  
+
+  
+  <div class="code"><pre>{{template &#34;base.html&#34; .}}
+{{template &#34;common.html&#34; .}}
+{{define &#34;meta&#34;}}{{end}}
+{{define &#34;title&#34;}}title{{end}}
+{{define &#34;body&#34;}}
+    body content
+{{end}}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Test</h3>
+        
+  
+  <p>
+    Run testcases without running server
+  </p>
+  
+
+  <ul>
+  
+    <li>Supporting `go test`</li>
+  
+    <li>Supporting <code>goconvey</code></li>
+  
+    <li>Supporting all the other unit test methods</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Modular Beego</h3>
+        
+  
+  <p>
+    Based on eight modules
+  </p>
+  
+
+  
+  <p>
+    Highly decoupled. Formed by modulars which can be used separately.
+  </p>
+  
+
+  <ul>
+  
+    <li>context</li>
+  
+    <li>config</li>
+  
+    <li>logs</li>
+  
+    <li>session</li>
+  
+    <li>cache</li>
+  
+    <li>httplib</li>
+  
+    <li>toolbox</li>
+  
+    <li>orm</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Context</h3>
+        
+  
+  <p>
+    The Context module for HTTP request.
+  </p>
+  
+
+  
+  <p>
+    The key modules
+  </p>
+  
+
+  
+  <p>
+    Input: get input data. Implemented many useful methods by <code>Request</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>Query，Cookie，Ip，Refer，Header，Session，IsWebsocket...</pre></div>
+  
+
+  
+  <p>
+    Output: The encapsulation for <code>Response</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>Header，Body，Cookie，Json，Jsonp，Xml，Download...</pre></div>
+  
+
+  
+  <p>
+    Usage: The <code>Ctx</code> encapsulated in <code>Controller</code> is <code>*context.Context</code> object
+  </p>
+  
+
+  
+  <div class="code"><pre>type Some struct {
+    beego.Controller
+}
+func (this *Some) Get() {
+    name := this.Ctx.Query(&#34;name&#34;)
+...</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Config</h3>
+        
+  
+  <p>
+    Supporting different kinds of config files: ini, json, xml, yaml
+  </p>
+  
+
+  
+  <p>
+    Beego framework is using Config, but all the config parameters can be controled easily
+  </p>
+  
+
+  
+  <p>
+    eg:
+  </p>
+  
+
+  
+  <div class="code"><pre>iniconf, err := NewConfig(&#34;ini&#34;, &#34;testini.conf&#34;)
+if err != nil {
+    t.Fatal(err)
+}</pre></div>
+  
+
+  
+  <p>
+    Get the configs of some section
+  </p>
+  
+
+  
+  <div class="code"><pre>[demo]
+port = 80
+
+iniconf.String(&#34;demo::port&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Logs</h3>
+        
+  
+  <p>
+    Supporting different kinds of logs: console, conn, file, smtp
+  </p>
+  
+
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">import (</span>
+<span num="4">    &#34;time&#34;</span>
+<span num="5"></span>
+<span num="6">    &#34;github.com/astaxie/beego/logs&#34;</span>
+<span num="7">)</span>
+<span num="8"></span>
+<span num="9">func main() {</span>
+<span num="10">    log := logs.NewLogger(10000)</span>
+<span num="11">    log.SetLogger(&#34;console&#34;, &#34;&#34;)</span>
+<span num="12">    log.EnableFuncCallDepth(true) // 开启文件和行号显示</span>
+<span num="13">    log.Trace(&#34;trace %s %s&#34;, &#34;param1&#34;, &#34;param2&#34;)</span>
+<span num="14">    log.Debug(&#34;debug&#34;)</span>
+<span num="15">    log.Info(&#34;info&#34;)</span>
+<span num="16">    log.Warn(&#34;warning&#34;)</span>
+<span num="17">    log.Error(&#34;error&#34;)</span>
+<span num="18">    log.Critical(&#34;critical&#34;)</span>
+<span num="19"></span>
+<span num="20">    time.Sleep(1 * 1e9) // why ?</span>
+<span num="21">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Session / Cache</h3>
+        
+  
+  <p>
+    Supporting different kinds of <code>Session</code> engine:
+  </p>
+  
+
+  
+  <div class="code"><pre>memory, cookie, couchbase, file, redis, mysql, postgres</pre></div>
+  
+
+  
+  <p>
+    After <code>Session</code> enabled:
+  </p>
+  
+
+  
+  <div class="code"><pre>this.GetSession(key)
+this.SetSession(key, value)</pre></div>
+  
+
+  
+  <p>
+    Supporting different kinds of <code>Cache</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>memory, memcache, redis, file</pre></div>
+  
+
+  
+  <p>
+    Using <code>Gob</code> for encoding and decoding internally
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>httplib</h3>
+        
+  
+  <p>
+    Used to simulate client to send out <b>HTTP</b> requests.
+  </p>
+  
+
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">package main</span>
+<span num="2"></span>
+<span num="3">import (</span>
+<span num="4">    &#34;fmt&#34;</span>
+<span num="5">    &#34;strings&#34;</span>
+<span num="6"></span>
+<span num="7">    &#34;github.com/astaxie/beego/httplib&#34;</span>
+<span num="8">)</span>
+<span num="9"></span>
+<span num="10">func main() {</span>
+<span num="11">    req := httplib.Get(&#34;http://qiniu.com&#34;)</span>
+<span num="12">    body, _ := req.String()</span>
+<span num="13">    lines := strings.Split(body, &#34;\n&#34;)</span>
+<span num="14">    fmt.Println(strings.Join(lines[2:8], &#34;\n&#34;))</span>
+<span num="15">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Supported object methods:
+  </p>
+  
+
+  
+  <p>
+    <code>httplib</code> package supports these methods to return <code>request</code> object
+  </p>
+  
+
+  
+  <p>
+    Get(url string)
+<br>
+
+    Post(url string)
+<br>
+
+    Put(url string)
+<br>
+
+    Delete(url string)
+<br>
+
+    Head(url string)
+  </p>
+  
+
+  <ul>
+  
+    <li>Supporting debug output</li>
+  
+    <li>Supporting HTTPS request</li>
+  
+    <li>Supporting timeout</li>
+  
+    <li>Supporting request parameters</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>toolbox</h3>
+        
+  
+  <p>
+    Inspired by Dropwizard framework
+  </p>
+  
+
+  
+  <div class="code"><pre>// bind 127.0.0.1:8088 by default
+beego.EnableAdmin = true</pre></div>
+  
+
+  <ul>
+  
+    <li>Safety check</li>
+  
+    <li>Performance optimize</li>
+  
+    <li>Visits statistics</li>
+  
+    <li>Scheduled tasks</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    healthcheck
+  </p>
+  
+
+  
+  <div class="code"><pre>type DatabaseCheck struct {
+}
+
+func (dc *DatabaseCheck) Check() error {
+    if dc.isConnected() {
+        return nil
+    } else {
+        return errors.New(&#34;can&#39;t connect database&#34;)
+    }
+}</pre></div>
+  
+
+  
+  <p>
+    Adding check items by <code>AddHealthCheck</code>:
+  </p>
+  
+
+  
+  <div class="code"><pre>toolbox.AddHealthCheck(&#34;database&#34;,&amp;DatabaseCheck{})
+
+$ curl http://beego.me:8088/healthcheck
+* deadlocks: OK
+* database: OK</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    profile
+  </p>
+  
+
+  
+  <p>
+    Printing out all the <code>goroutine</code> status
+  </p>
+  
+
+  
+  <div class="code"><pre>lookup goroutine</pre></div>
+  
+
+  
+  <p>
+    Printing out current <code>heap</code> info
+  </p>
+  
+
+  
+  <div class="code"><pre>lookup heap</pre></div>
+  
+
+  
+  <p>
+    Printing out threads creating info
+  </p>
+  
+
+  
+  <div class="code"><pre>lookup threadcreate</pre></div>
+  
+
+  
+  <p>
+    Printing out <code>block</code> info
+  </p>
+  
+
+  
+  <div class="code"><pre>lookup block</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Recording <code>cpuprof</code> info
+  </p>
+  
+
+  
+  <div class="code"><pre>start cpuprof / stop cpuprof</pre></div>
+  
+
+  
+  <p>
+    Recording <code>memprof</code> info
+  </p>
+  
+
+  
+  <div class="code"><pre>get memprof</pre></div>
+  
+
+  
+  <p>
+    Checking <code>GC</code> info
+  </p>
+  
+
+  
+  <div class="code"><pre>gc summary</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Statistics</h3>
+        
+<div class="image">
+  <img src="statics.jpg" height="200" width="600">
+</div>
+
+  
+  <div class="code"><pre>| requestUrl           | method     | times   | used             | max used         | min used         | avg used         |
+| /api/user            | POST       |  2      | 122.00us         | 120.00us         | 2.00us           | 61.00us          |
+| /api/user            | GET        |  1      | 13.00us          | 13.00us          | 13.00us          | 13.00us          |
+| /api/user            | DELETE     |  1      | 1.40us           | 1.40us           | 1.40us           | 1.40us           |
+| /api/admin           | POST       |  1      | 14.00us          | 14.00us          | 14.00us          | 14.00us          |
+| /api/user/astaxie    | POST       |  1      | 12.00us          | 12.00us          | 12.00us          | 12.00us          |
+| /api/user/xiemengjun | POST       |  1      | 13.00us          | 13.00us          | 13.00us          | 13.00us          |</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Showing statistics based on <code>RequestPath</code> by default
+  </p>
+  
+
+  
+  <p>
+    You can also add status info into dataset manualy.
+  </p>
+  
+
+  
+  <div class="code"><pre>toolbox.StatisticsMap.AddStatistics(&#34;POST&#34;, &#34;/api/user&#34;, &#34;&amp;admin.user&#34;, time.Duration(2000))
+toolbox.StatisticsMap.AddStatistics(&#34;POST&#34;, &#34;/api/user&#34;, &#34;&amp;admin.user&#34;, time.Duration(120000))
+toolbox.StatisticsMap.AddStatistics(&#34;GET&#34;, &#34;/api/user&#34;, &#34;&amp;admin.user&#34;, time.Duration(13000))
+toolbox.StatisticsMap.AddStatistics(&#34;POST&#34;, &#34;/api/admin&#34;, &#34;&amp;admin.user&#34;, time.Duration(14000))
+toolbox.StatisticsMap.AddStatistics(&#34;POST&#34;, &#34;/api/user/astaxie&#34;, &#34;&amp;admin.user&#34;, time.Duration(12000))
+toolbox.StatisticsMap.AddStatistics(&#34;POST&#34;, &#34;/api/user/xiemengjun&#34;, &#34;&amp;admin.user&#34;, time.Duration(13000))
+toolbox.StatisticsMap.AddStatistics(&#34;DELETE&#34;, &#34;/api/user&#34;, &#34;&amp;admin.user&#34;, time.Duration(1400))</pre></div>
+  
+
+  
+  <p>
+    Getting statistics info
+  </p>
+  
+
+  
+  <div class="code"><pre>toolbox.StatisticsMap.GetMap(os.Stdout)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>orm</h3>
+        
+  
+  <p>
+    Inspired by *Django ORM* and <b>SQLAlchemy</b>
+  </p>
+  
+
+  
+  <p>
+    Supported databases and drivers
+  </p>
+  
+
+  <ul>
+  
+    <li>MySQL：github.com/go-sql-driver/mysql</li>
+  
+    <li>PostgreSQL：github.com/lib/pq</li>
+  
+    <li>Sqlite3：github.com/mattn/go-sqlite3</li>
+  
+  </ul>
+
+  
+  <p>
+    Define model by <code>struct</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>type User struct {
+    Id    int
+    Name  string `orm:&#34;size(100)&#34;`
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Supporting all the Go&#39;s type
+  </p>
+  
+
+  
+  <div class="code"><pre>Go&#39;s basic type, sql.Null*, customized type such as: `type Int int64`</pre></div>
+  
+
+  
+  <p>
+    Using simple <b>CRUD</b> style:
+  </p>
+  
+
+  
+  <div class="code"><pre>o.Insert(&amp;user)
+o.Read(&amp;user)</pre></div>
+  
+
+  
+  <p>
+    Auto creating tables.
+  </p>
+  
+
+  
+  <p>
+    Auto <b>Join</b> association tables
+  </p>
+  
+
+  
+  <p>
+    Crossing databse compatibility check
+  </p>
+  
+
+  
+  <p>
+    Can use raw SQL for querying and mapping
+  </p>
+  
+
+  
+  <p>
+    Fully coverd test cases to keep the <b>ORM</b> stable and robust
+  </p>
+  
+<p class="link"><a href="http://beego.me/docs/mvc/model/overview.md" target="_blank">beego.me/docs/mvc/model/overview.md</a></p>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h2>And More</h2>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Other modules:
+  </p>
+  
+
+  <ul>
+  
+    <li>Validation</li>
+  
+    <li>Captcha</li>
+  
+    <li>Testing</li>
+  
+    <li>BasicAuth</li>
+  
+    <li>Form (wip)</li>
+  
+  </ul>
+
+  
+  <p>
+    Even more modules:
+  </p>
+  
+
+  <ul>
+  
+    <li>i18n</li>
+  
+    <li>wetalk</li>
+  
+    <li>social-auth</li>
+  
+    <li>beego compress</li>
+  
+    <li>beego admin</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h2>Beego vs Others</h2>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Revel</h3>
+        
+  
+  <p>
+    beego can / revel not
+  </p>
+  
+
+  <ul>
+  
+    <li>Independent decoupled config that is easy to change</li>
+  
+    <li>As similar as http, the router configuration is defined in go file so the router can be dynamic.</li>
+  
+    <li>Can be run by compling once</li>
+  
+    <li>Different kinds of ways to mapping routers</li>
+  
+    <li>Supporting `go test` or <code>GoConvey</code></li>
+  
+    <li>Very good <code>session</code> and <code>cache</code> system</li>
+  
+    <li>Running status debugging</li>
+  
+  </ul>
+
+  
+  <p>
+    revel can / beego not
+  </p>
+  
+
+  <ul>
+  
+    <li><code>action</code> method&#39;s parameters support static binding</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Martini</h3>
+        
+  
+  <p>
+    beego can / martini not
+  </p>
+  
+
+  <ul>
+  
+    <li>No need to define so many parameters in functions.</li>
+  
+    <li>No need to remember so many <code>middleware</code> type.</li>
+  
+    <li>Better performance. *Martini*&#39;s performance will drop down rapidly while <code>middleware</code> increasing</li>
+  
+    <li>`Martini`&#39;s key modules are maintainanced by one person, it&#39;s hard to improve</li>
+  
+  </ul>
+
+  
+  <p>
+    martini can / beego not
+  </p>
+  
+
+  <ul>
+  
+    <li>Inject parameters for function dynamicly. (The reason of reducing performance: <code>reflect</code>)</li>
+  
+    <li>magic. A cool way to inject pulgins</li>
+  
+    <li>Easy for plugin development</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h2>Resource</h2>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Beego offical site
+  </p>
+  
+<p class="link"><a href="http://beego.me" target="_blank">beego.me</a></p><p class="link"><a href="http://beego.me/docs/intro/" target="_blank">beego.me/docs/intro/</a></p><p class="link"><a href="https://gowalker.org/github.com/astaxie/beego" target="_blank">gowalker.org/github.com/astaxie/beego</a></p>
+  
+  <p>
+    Go Advent Day 5 - An introduction to beego
+  </p>
+  
+<p class="link"><a href="http://blog.gopheracademy.com/day-05-beego" target="_blank">blog.gopheracademy.com/day-05-beego</a></p>
+  
+  <p>
+    QCon 2013 Build high performance API with Beego
+  </p>
+  
+<p class="link"><a href="http://djt.qq.com/ppt/236" target="_blank">djt.qq.com/ppt/236</a></p>
+  
+  <p>
+    Go China blog
+  </p>
+  
+<p class="link"><a href="http://blog.go-china.org" target="_blank">blog.go-china.org</a></p>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+  
+  <p>
+    Beego + mgo
+  </p>
+  
+<p class="link"><a href="https://github.com/goinggo/beego-mgo" target="_blank">github.com/goinggo/beego-mgo</a></p><p class="link"><a href="http://www.goinggo.net/2013/12/sample-web-application-using-beego-and.html" target="_blank">www.goinggo.net/2013/12/sample-web-application-using-beego-and.html</a></p>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Status</h3>
+        
+  
+  <p>
+    Github Star: 2083 Fork: 578
+  </p>
+  
+
+  
+  <p>
+    Keeping on maintaining
+  </p>
+  
+
+  
+  <p>
+    Team
+  </p>
+  
+
+  <ul>
+  
+    <li>AstaXie</li>
+  
+  </ul>
+<p class="link"><a href="http://github.com/astaxie" target="_blank">github.com/astaxie</a></p>
+  <ul>
+  
+    <li>Unknown</li>
+  
+  </ul>
+<p class="link"><a href="http://github.com/unknwon" target="_blank">github.com/unknwon</a></p>
+  <ul>
+  
+    <li>slene</li>
+  
+  </ul>
+<p class="link"><a href="http://github.com/slene" target="_blank">github.com/slene</a></p>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3></h3>
+        
+<div class="image">
+  <img src="beegomgo.jpg">
+</div>
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    Lei Cao
+  </p>
+  
+<p class="link"><a href="http://github.com/lei-cao" target="_blank">http://github.com/lei-cao</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>
