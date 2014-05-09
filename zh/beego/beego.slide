@@ -1,0 +1,640 @@
+Beego - 失落的手册
+一个快速开发 Go 应用的 HTTP 框架
+15:00 28 Mar 2014
+Tags: foo, bar, baz
+
+slene
+http://github.com/slene
+
+* Overview
+
+设计灵感主要来源于 tornado、sinatra 和 flask
+
+为何不是 web 而是 http 框架？
+
+ 适用于各种 http 服务，api服务，后端服务，游戏开发...
+
+- 高性能与 revel 不相上下，高于 martini
+- 开发快捷，组件多，高度解耦
+- 产品级广泛应用，360，weico，jd，opera ...
+- RESTful 方式，也可以自定义 action
+- 稳定，更新频繁，持续维护
+- 文档完整
+
+* Quick Start
+
+.link http://127.0.0.1:8080
+
+.play quick.go
+
+* 使用 bee 工具协助快速开发 beego 项目
+
+  go get github.com/beego/bee
+
+bee new 创建一个 Web 项目
+
+  cd $GOPATH/src
+  bee new app
+  app
+  ├── conf
+  │   └── app.conf
+  ├── routers
+  │   └── router.go
+  ├── controllers
+  │   └── default.go
+  └── views
+      └── index.tpl
+  ├── models
+  ├── static
+  ├── tests
+  │   └── default_test.go
+  ├── main.go
+
+* 
+
+bee run 可以 watch & auto build
+
+配置文件 bee.json 合理配置以后适用于任何 Go 项目，比如 martini
+
+  $ bee run
+  14-03-26 02:09:58 [INFO] Uses 'app' as 'appname'
+  14-03-26 02:09:58 [INFO] Initializing watcher...
+  14-03-26 02:09:58 [TRAC] Directory(/project/qiniu/beego/src/app/controllers)
+  14-03-26 02:09:58 [TRAC] Directory(/project/qiniu/beego/src/app/models)
+  14-03-26 02:09:58 [TRAC] Directory(/project/qiniu/beego/src/app)
+  14-03-26 02:09:58 [INFO] Start building...
+  14-03-26 02:10:01 [SUCC] Build was successful
+  14-03-26 02:10:01 [INFO] Restarting app ...
+  14-03-26 02:10:01 [INFO] ./app is running...
+  2014/03/26 02:10:01 [I] Running on :8080
+
+  new         create an application base on beego framework
+  run         run the app which can hot compile
+  pack        compress an beego project
+  api         create an api application base on beego framework
+  router      auto-generate routers for the app controllers
+  test        test the app
+  bale        packs non-Go files to Go source files
+
+
+* Beego 架构设计
+
+* 配置
+
+默认从 conf/app.conf 读取 ini 配置
+
+  httpaddr = "127.0.0.1"
+  httpport = 9090
+  runmode ="dev"
+ 
+  beego.AppConfig.String("runmode")
+
+对 AppConfig 没有依赖，对 Beego 的配置可以完全重载
+
+  beego.HttpAddr = "127.0.0.1"
+  beego.HttpPort = "9080"
+  beego.RunMode = "prod"
+
+Beego 的配置项目，都可以通过 beego.XXXXX 来设置
+
+* Router
+
+基于 Go 的 net/http
+
+与 http 一样，路由配置定义在 go 文件里，所以可以实现动态路由
+
+.image router.jpg
+
+* 
+
+- 固定路由
+
+也就是全匹配的路由，根据请求方法到对应的 action，典型的 RESTful 方式
+
+  beego.Router("/admin", &admin.UserController{})
+
+- 正则匹配路由
+
+类似 sinatra 的正则实现方式
+
+  beego.Router(“/news/:all”, &controllers.RController{})
+  this.Ctx.Input.Param(":all")
+
+  beego.Router(“/api/:id([0-9]+)“, &controllers.RController{})
+  this.Ctx.Input.Param(":id")
+  
+  beego.Router(“/download/*.*”, &controllers.RController{})
+  this.Ctx.Input.Param(":path")
+  this.Ctx.Input.Param(":ext")
+
+  beego.Router(“/download/ceshi/*“, &controllers.RController{})
+  this.Ctx.Input.Param(":splat")
+
+* 
+
+- 自动路由
+
+根据控制器的名字和请求的 action 自动匹配到 controller
+
+  beego.AutoRouter(&controllers.ObjectController{})
+
+  /object/login   调用 ObjectController 中的 Login 方法
+  /object/logout  调用 ObjectController 中的 Logout 方法
+
+
+- 进阶
+
+支持自定义 method 对应的 action 方法
+
+  beego.Router("/api/list",&RestController{},"*:ListFood")
+  beego.Router("/api/create",&RestController{},"post:CreateFood")
+  beego.Router("/api/update",&RestController{},"put:UpdateFood")
+  beego.Router("/api/delete",&RestController{},"delete:DeleteFood")
+
+* 
+
+- 组路由
+
+匹配 URL
+
+- /admin/login
+- /admin/logout
+- /admin/register
+
+  GR := beego.NewGroupRouters{}
+  GR.AddRouter("/login", &AuthControllers{}, "get:Login")
+  GR.AddRouter("/logout", &AuthControllers{}, "get:Logout")
+  GR.AddRouter("/register", &AuthControllers{}, "get:Register")
+
+  beego.AddGroupRouter("/admin", GR)
+  beego.Run()
+
+* Controller
+
+默认是标准的 RESTFul action，Get Post Delete Put Head Patch Options
+
+可以自定义 action
+
+.image controller.jpg
+
+* 
+
+典型用法
+
+- 通过 Controller.Ctx 提供的上下文功能来操作 Request 和 Response
+
+  type BaseController struct {
+      beego.Controller
+  }
+
+  func (this *BaseController) Post() {
+      // 获取表单变量 get / post
+      value := this.GetString("name")
+      // 返回 json 数据
+      this.Data["json"] = map[string]string{
+          "success": true,
+          "data": value,
+      }
+      this.ServeJson()
+  }
+
+* Filter
+
+hook 系统：
+
+- BeforeRouter 寻找路由之前
+- AfterStatic 静态渲染之后
+- BeforeExec 找到路由之后，开始执行相应的 Controller 之前
+- AfterExec 执行完 Controller 逻辑之后执行的过滤器
+- FinishRouter 路由结束
+
+  var FilterUser = func(ctx *context.Context) {
+      _, ok := ctx.Input.Session("uid").(int)
+      if !ok && ctx.Request.RequestURI != "/login" {
+          ctx.Redirect(302, "/login")
+      }
+  }
+
+  beego.AddFilter("*","AfterStatic",FilterUser)
+
+* Template
+
+采用的是 Go 内置的 html/template
+
+  beego.ViewsPath = "views" // 模板路径默认为 views
+
+默认使用 ViewsPath/ControllerName/method.tpl 模板文件
+
+- 支持标准的 Layout 方式
+- 支持 LayoutSection
+
+  func (this *IndexController) Get() {
+      // 设置模板变量
+      this.Data["content"] = "value"
+
+      // 指定模板
+      this.TplNames = "index.html"
+  }
+
+* 
+
+非典型用法
+
+base.html
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        {{template "base/head.html" .}}
+        {{template "head" .}}
+    </head>
+    <body id="front">
+        <div id="wrapper">
+            {{template "header" .}}
+            <div id="main" class="container">
+                {{template "body" .}}
+            </div>
+        </div>
+        {{template "footer" .}}
+    </body>
+    </html>
+
+* 
+
+common.html
+
+    {{define "head"}}{{end}}
+    {{define "header"}}
+        {{template "base/navbar.html" .}}
+    {{end}}
+    {{define "footer"}}
+        {{template "base/foot.html" .}}
+    {{end}}
+
+index.html
+
+    {{template "base.html" .}}
+    {{template "common.html" .}}
+    {{define "meta"}}{{end}}
+    {{define "title"}}title{{end}}
+    {{define "body"}}
+        body content
+    {{end}}
+
+* Test
+
+不启动 Server 运行测试用例
+
+- 支持 go test
+- 支持 goconvey
+- 支持任何其他的单元测试方法
+
+* Beego 模块化
+* 
+
+基于八大独立的模块构建
+
+高度解耦，功能模块化，可以单独使用这些模块
+
+- context
+- config
+- logs
+- session
+- cache
+- httplib
+- toolbox
+- orm
+
+* Context
+
+针对 HTTP 请求的上下文模块
+
+重要模块
+
+Input，获取输入的信息，通过 reqeust 实现很多方便的方法
+
+  Query，Cookie，Ip，Refer，Header，Session，IsWebsocket...
+
+Output，针对 Response 的封装
+
+  Header，Body，Cookie，Json，Jsonp，Xml，Download...
+
+使用方法，封装在 Controller 的 Ctx 就是 *context.Context 对象
+
+  type Some struct {
+      beego.Controller
+  }
+  func (this *Some) Get() {
+      name := this.Ctx.Query("name")
+  ...
+
+* Config
+
+支持多种格式的配置文件读取 ini json xml yaml
+
+Beego 框架中有用到 Config，但非耦合，所有配置项可以自由控制
+
+eg:
+
+  iniconf, err := NewConfig("ini", "testini.conf")
+  if err != nil {
+      t.Fatal(err)
+  }
+
+获取某个章节的配置
+
+  [demo]
+  port = 80
+
+  iniconf.String("demo::port")
+
+* Logs
+
+支持多种方式的日志记录 console, conn, file, smtp
+
+.play logs.go
+
+* Session / Cache
+
+Session 支持多种引擎
+
+  memory, cookie, couchbase, file, redis, mysql, postgres
+
+开启 Session 以后
+
+  this.GetSession(key)
+  this.SetSession(key, value)
+
+Cache 支持多种缓存系统
+
+  memory, memcache, redis, file
+
+内部使用 Gob 编解码
+
+* httplib
+
+主要用来模拟客户端发送 HTTP 请求
+
+.play httplib.go
+
+* 
+
+支持的方法对象
+
+httplib 包里面支持如下的方法返回 request 对象：
+
+Get(url string)
+Post(url string)
+Put(url string)
+Delete(url string)
+Head(url string)
+
+- 支持 debug 输出
+- 支持 HTTPS 请求
+- 支持超时设置
+- 可设置请求参数
+
+* toolbox
+
+灵感来自于 Dropwizard 框架
+
+ // 默认 bind 127.0.0.1:8088
+ beego.EnableAdmin = true
+
+- 健康检查
+- 性能调试
+- 访问统计
+- 计划任务
+
+* 
+
+healthcheck
+
+  type DatabaseCheck struct {
+  }
+
+  func (dc *DatabaseCheck) Check() error {
+      if dc.isConnected() {
+          return nil
+      } else {
+          return errors.New("can't connect database")
+      }
+  }
+
+然后就可以通过如下方式增加检测项：
+
+  toolbox.AddHealthCheck("database",&DatabaseCheck{})
+
+  $ curl http://beego.me:8088/healthcheck
+  * deadlocks: OK
+  * database: OK
+
+* 
+
+profile
+
+打印出来当前全部的 goroutine 执行的情况
+
+  lookup goroutine
+
+用来打印当前 heap 的信息
+
+  lookup heap
+
+查看创建线程的信息
+
+  lookup threadcreate
+
+查看 block 信息
+
+  lookup block
+
+* 
+
+记录 cpuprof 信息
+
+  start cpuprof / stop cpuprof
+
+开启记录 memprof
+
+  get memprof
+
+查看 GC 信息
+
+  gc summary
+
+* Statistics
+
+.image statics.jpg 200 600
+
+  | requestUrl           | method     | times   | used             | max used         | min used         | avg used         |
+  | /api/user            | POST       |  2      | 122.00us         | 120.00us         | 2.00us           | 61.00us          |
+  | /api/user            | GET        |  1      | 13.00us          | 13.00us          | 13.00us          | 13.00us          |
+  | /api/user            | DELETE     |  1      | 1.40us           | 1.40us           | 1.40us           | 1.40us           |
+  | /api/admin           | POST       |  1      | 14.00us          | 14.00us          | 14.00us          | 14.00us          |
+  | /api/user/astaxie    | POST       |  1      | 12.00us          | 12.00us          | 12.00us          | 12.00us          |
+  | /api/user/xiemengjun | POST       |  1      | 13.00us          | 13.00us          | 13.00us          | 13.00us          |
+
+* 
+
+默认自动根据 RequestPath 统计，无需其他设置
+
+但你可以，手动增加状态信息到数据里
+
+  toolbox.StatisticsMap.AddStatistics("POST", "/api/user", "&admin.user", time.Duration(2000))
+  toolbox.StatisticsMap.AddStatistics("POST", "/api/user", "&admin.user", time.Duration(120000))
+  toolbox.StatisticsMap.AddStatistics("GET", "/api/user", "&admin.user", time.Duration(13000))
+  toolbox.StatisticsMap.AddStatistics("POST", "/api/admin", "&admin.user", time.Duration(14000))
+  toolbox.StatisticsMap.AddStatistics("POST", "/api/user/astaxie", "&admin.user", time.Duration(12000))
+  toolbox.StatisticsMap.AddStatistics("POST", "/api/user/xiemengjun", "&admin.user", time.Duration(13000))
+  toolbox.StatisticsMap.AddStatistics("DELETE", "/api/user", "&admin.user", time.Duration(1400))
+
+获取统计信息
+
+  toolbox.StatisticsMap.GetMap(os.Stdout)
+
+* orm
+
+灵感来自于 Django ORM 和 SQLAlchemy
+
+支持的数据库与驱动
+
+- MySQL：github.com/go-sql-driver/mysql
+- PostgreSQL：github.com/lib/pq
+- Sqlite3：github.com/mattn/go-sqlite3
+
+使用 struct 作为模型定义
+
+  type User struct {
+      Id    int
+      Name  string `orm:"size(100)"`
+  }
+
+* 
+
+支持 Go 的所有类型存储
+
+  Go基本类型，sql.Null*，自定义类型如：type Int int64
+
+采用简单的 CRUD 风格
+
+  o.Insert(&user)
+  o.Read(&user)
+
+自动建表
+
+自动 Join 关联表
+
+跨数据库兼容查询
+
+允许直接使用 SQL 查询／映射
+
+有完整的测试保证 ORM 的稳定与健壮
+
+.link http://beego.me/docs/mvc/model/overview.md
+
+* 另外
+
+* 
+
+其他模块：
+
+- Validation
+- Captcha
+- Testing
+- BasicAuth
+- Form (wip)
+
+衍生项目和模块：
+
+- i18n
+- wetalk
+- social-auth
+- beego compress
+- beego admin
+
+* Beego vs Others
+
+* Revel 篇
+
+beego can / revel not
+
+- 独立的 config 配置，无耦合，任意调整
+- 路由在 go 文件里配置，可以实现动态路由配置
+- 编译一次即可启动
+- 路由支持多种匹配方法
+- 支持 go test / GoConvey
+- 模块多，完善的 session / cache 系统
+- 运行时状态调试
+
+revel can / beego not
+
+- action 函数参数的静态分析绑定
+
+* Martini 篇
+
+beego can / martini not
+
+- 不需要在函数里定义各种参数，简洁
+- 不需要记忆任何 middleware 类型，action 无参数
+- 提供更好的性能，随着 middleware 的增加，martini 性能下降快
+- 模块完整，martini 的主要功能模块由个人维护，难以增进
+
+martini can / beego not
+
+- 函数参数的动态注入（性能降低的原因 reflect）
+- magic，新颖的注入式的插件方式
+- 注入式的方式，易于开发插件
+
+* Resource
+* 
+
+Beego 官网
+
+.link http://beego.me
+.link http://beego.me/docs/intro/
+.link https://gowalker.org/github.com/astaxie/beego
+
+Go Advent Day 5 - An introduction to beego
+
+.link http://blog.gopheracademy.com/day-05-beego
+
+QCon 2013 基于Beego打造高效API之路
+
+.link http://djt.qq.com/ppt/236
+
+Go China blog
+
+.link http://blog.go-china.org
+
+* 
+
+Beego + mgo
+
+.link https://github.com/goinggo/beego-mgo
+.link http://www.goinggo.net/2013/12/sample-web-application-using-beego-and.html
+
+.image beegomgo.jpg
+
+* Status
+
+Github Star: 1895 Fork: 519
+
+持续维护中
+
+Team
+
+- AstaXie
+
+.link http://github.com/astaxie
+
+- 无闻
+
+.link http://github.com/unknwon
+
+- me
+
+.link http://github.com/slene
+
+* 
+.image beegomgo.jpg
