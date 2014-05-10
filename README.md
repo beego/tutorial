@@ -1,50 +1,52 @@
-beego入门教程
+Getting Started With Beego
 ========
 
-beego的文档应该还算比较完整的,但是我还是希望通过更多地素材来推进beego的发展,视频教程应该是一个非常直观的学习方式,所以决定在发布beego1.2之后开始制作一系列的beego视频教程,主要教大家了解beego的各个组件,运行逻辑,如何使用模块.同时最后希望通过两个例子来演示如何开发API和web应用.
+Beego has pretty good documents already. Now we want to create more resources for Beego.
+Video tutorials is a very good way for new beginners so we decided to make a series of video tutorials after releasing Beego 1.2.
+We will teach you Beego's every components, the code logic and how to use Beego's modules. We will also demonstrate how to develope API service and web application.
 
-第一课: beego的设计思路
+(Lesson 1: The Zen of Beego)[./en/1/why_beego.html]
 
-第二课:beego的路由设置
+Lesson 2: Routing
 
-第三课:beego的参数读取
+Lesson 3: Accessing Parameters
 
-第四课:beego的controller
+Lesson 4: Controllers
 
-第五课:beego的ORM之入门
+Lesson 5: ORM
+ 
+Lesson 6: Advanced ORM
 
-第六课:beego的ORM之高级应用
+Lesson 7: Beego with mgo and redis
 
-第七课:beego和mgo/redis等得配合应用
+Lesson 8: Templates
 
-第八课:beego的模板
+Lesson 9: Filters
 
-第九课:beego的filter模式
+Lesson 10: Logging
 
-第十课:beego的日志处理
+Lesson 11: Error Handling
 
-第十一课:beego的错误处理
+Lesson 12: Admin System
 
-第十二课:beego的管理系统
+Lesson 13: Session
 
-第十三课:beego的模块之session
+Lesson 14: Cache
 
-第十四课:beego的模块之cache
+Lesson 15: Logs
 
-第十五课:beego的模块之logs
+Lesson 16: Httplib
 
-第十六课:beego的模块之httplib
+Lesson 17: Context
 
-第十七课:beego的模块之context
+Lesson 18: Toolbox
 
-第十八课:beego的模块之toolbox
+Lesson 19: Config
 
-第十九课:beego的模块之config
+Lesson 20: Forms
 
-第二十课:beego的模块之forms
+Lesson 21: I18n
 
-第二十一课:beego的模块之i18n
+Lesson 22: Demo: API Service
 
-第二十二课:beego的项目开发之API应用
-
-第二十三课:beego的项目开发之Web应用开发
+Lesson 23: Demo: Web Application
