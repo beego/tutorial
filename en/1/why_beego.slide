@@ -38,7 +38,7 @@ The reason is *beego* suits for any kinds of http services: api services, web ba
 - Stable; active update; continuous maintainace
 - Pretty good documents
 
-* Where will beego evolve in the future?
+* Where will beego lead to in the future?
 
 - Highly modular. Improving existent modules and developing more new modules
 - Light core framework. *beego* is formed by many modules now. Will make it even lighter. Any part of MVC can be replaced.
