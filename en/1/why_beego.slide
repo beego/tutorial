@@ -1,19 +1,17 @@
-The Zen of Beego
-A Go framework for developing HTTP application rapidly
-20:00 10 May 2014
-Tags: beego
+Beego Framework Tutorials - 1 - Introduction to Beego
+A Go HTTP framework for developing HTTP application rapidly
 
-Lei Cao
+By Lei Cao
 http://github.com/lei-cao
 
 * Content
-- Why do we design *beego*?
-- What can *beego* do?
-- Where will *beego* go?
+- Why do we create *beego*?
+- What can we do with *beego*?
+- Where will *beego* lead to in the future?
 - How to install and config *beego*?
-- When should I start learning *beego*? Now!
+- When can I get started with *beego*?
 
-* Why do we design beego?
+- Why do we create beego?
 
 1. Astaxie want to create a framework while he was writing his book.
 
@@ -22,7 +20,7 @@ http://github.com/lei-cao
 2. It is inspired by tornado, sinatra and flask.
 
 
-* What can beego do?
+- What can we do with beego?
 
 *beego* is a http application framework
 
@@ -33,38 +31,40 @@ The reason is *beego* suits for any kinds of http services: api services, web ba
 * beego's Key Features
 
 - High performance. The fastest Go framework out there now.
-- Rapid development, lots of components, highly decoupled
-- Tons of products. 360，weico，jd，opera ...
+.link http://www.techempower.com/benchmarks/#section=data-r9&hw=i7&test=json Web Framework Benchmarks
+- High-productivity, many components, highly decoupled
+- Tons of live products. 360，weico，jd，opera ...
 - RESTful model with customizable actions
-- high stability, frequent update, continuous maintainace
-- Good documents, online FAQ
+- Stable; active update; continuous maintainace
+- Pretty good documents
 
-* Where will beego go?
+- Where will beego evolve in the future?
 
 - Highly modular. Improving existent modules and developing more new modules
 - Light core framework. *beego* is formed by many modules now. Will make it even lighter. Any part of MVC can be replaced.
 - Enhance routing. Compating with other framework's service. For example you can create a module in Martini and call it in *beego*.
 - Enhance `bee` tool. Automating the development even more.
 
-* How to install and config beego?
+- How to install and config beego?
 
 *beego* is the framework, *bee* is the developing tool.
 
 	go get github.com/astaxie/beego
 	go get github.com/beego/bee
 
-* Frequently happened problems:
+* Frequently happened issues:
 - Setting up *GOPATH*
 - Setting up *bee* tool
-- *git* is not installed
 
-* Testing if installed sucessfully
-Type `bee` in command line
+.link http://beego.me/docs/install/bee.md bee tool document
 
-* When should I start learning beego? Now!
+- Testing if installed sucessfully
+- Type `bee` in command line
+
+
+* When can I get started with beego? The answer is now!
 
 	bee new beegoProject
-	
 
 	bee run watchall	
 	
@@ -87,3 +87,7 @@ Type `bee` in command line
 	|   `-- default_test.go
 	`-- views
 	    `-- index.tpl
+
+* Links
+
+.link https://github.com/beego/tutorial Beego Framework Toturials

@@ -1,52 +1,52 @@
 Getting Started With Beego
 ========
 
+[中文版](./README_zh.md)
+
 Beego has pretty good documents already. Now we want to create more resources for Beego.
 Video tutorials is a very good way for new beginners so we decided to make a series of video tutorials after releasing Beego 1.2.
 We will teach you Beego's every components, the code logic and how to use Beego's modules. We will also demonstrate how to develope API service and web application.
 
-[Lesson 1: The Zen of Beego](./en/1/why_beego.slide)
+[Beego Framework Tutorials - 1 - Introduction to Beego](http://go-talks.appspot.com/github.com/beego/tutorial/en/1/why_beego.slide)
 
-Lesson 2: Routing
+Beego Framework Tutorials - 2 - Routing
 
-Lesson 3: Accessing Parameters
+Beego Framework Tutorials - 3 - Accessing Parameters
 
-Lesson 4: Controllers
+Beego Framework Tutorials - 4 - Controllers
 
-Lesson 5: ORM
+Beego Framework Tutorials - 5 - ORM
  
-Lesson 6: Advanced ORM
+Beego Framework Tutorials - 6 - Advanced ORM
 
-Lesson 7: Beego with mgo and redis
+Beego Framework Tutorials - 7 - Beego with mgo and redis
 
-Lesson 8: Templates
+Beego Framework Tutorials - 8 - Templates
 
-Lesson 9: Filters
+Beego Framework Tutorials - 9 - Filters
 
-Lesson 10: Logging
+Beego Framework Tutorials - 10 - Logging
 
-Lesson 11: Error Handling
+Beego Framework Tutorials - 12 - Admin System
 
-Lesson 12: Admin System
+Beego Framework Tutorials - 13 - Session
 
-Lesson 13: Session
+Beego Framework Tutorials - 14 - Cache
 
-Lesson 14: Cache
+Beego Framework Tutorials - 15 - Logs
 
-Lesson 15: Logs
+Beego Framework Tutorials - 16 - Httplib
 
-Lesson 16: Httplib
+Beego Framework Tutorials - 17 - Context
 
-Lesson 17: Context
+Beego Framework Tutorials - 18 - Toolbox
 
-Lesson 18: Toolbox
+Beego Framework Tutorials - 19 - Config
 
-Lesson 19: Config
+Beego Framework Tutorials - 20 - Forms
 
-Lesson 20: Forms
+Beego Framework Tutorials - 21 - I18n
 
-Lesson 21: I18n
+Beego Framework Tutorials - 22 - Demo: API Service
 
-Lesson 22: Demo: API Service
-
-Lesson 23: Demo: Web Application
+Beego Framework Tutorials - 23 - Demo: Web Application
