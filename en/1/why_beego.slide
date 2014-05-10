@@ -11,7 +11,7 @@ http://github.com/lei-cao
 - How to install and config *beego*?
 - When can I get started with *beego*?
 
-- Why do we create beego?
+* Why do we create beego?
 
 1. Astaxie want to create a framework while he was writing his book.
 
@@ -20,7 +20,7 @@ http://github.com/lei-cao
 2. It is inspired by tornado, sinatra and flask.
 
 
-- What can we do with beego?
+* What can we do with beego?
 
 *beego* is a http application framework
 
@@ -38,14 +38,14 @@ The reason is *beego* suits for any kinds of http services: api services, web ba
 - Stable; active update; continuous maintainace
 - Pretty good documents
 
-- Where will beego evolve in the future?
+* Where will beego evolve in the future?
 
 - Highly modular. Improving existent modules and developing more new modules
 - Light core framework. *beego* is formed by many modules now. Will make it even lighter. Any part of MVC can be replaced.
 - Enhance routing. Compating with other framework's service. For example you can create a module in Martini and call it in *beego*.
 - Enhance `bee` tool. Automating the development even more.
 
-- How to install and config beego?
+* How to install and config beego?
 
 *beego* is the framework, *bee* is the developing tool.
 
