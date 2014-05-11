@@ -7,7 +7,7 @@ Beego has pretty good documents already. Now we want to create more resources fo
 Video tutorials is a very good way for new beginners so we decided to make a series of video tutorials after releasing Beego 1.2.
 We will teach you Beego's every components, the code logic and how to use Beego's modules. We will also demonstrate how to develope API service and web application.
 
-[Beego Framework Tutorials - 1 - Introduction to Beego](http://go-talks.appspot.com/github.com/beego/tutorial/en/1/why_beego.slide)
+[Beego Framework Tutorials - 1 - Introduction to Beego](http://go-talks.appspot.com/github.com/beego/tutorial/en/1/why_beego.slide) [Youtube](https://www.youtube.com/watch?v=zvXDgfoUKFY)
 
 Beego Framework Tutorials - 2 - Routing
 

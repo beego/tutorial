@@ -3,7 +3,7 @@ beego入门教程
 
 beego的文档应该还算比较完整的,但是我还是希望通过更多地素材来推进beego的发展,视频教程应该是一个非常直观的学习方式,所以决定在发布beego1.2之后开始制作一系列的beego视频教程,主要教大家了解beego的各个组件,运行逻辑,如何使用模块.同时最后希望通过两个例子来演示如何开发API和web应用.
 
-[第一课: beego的设计思路](./zh/1/why_beego.slide)
+[第一课: beego的设计思路](http://go-talks.appspot.com/github.com/beego/tutorial/zh/1/why_beego.slide)
 
 第二课: beego的路由设置
 
