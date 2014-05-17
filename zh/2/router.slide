@@ -1,6 +1,6 @@
-Beego的路由设置
+Beego入门教程之二——路由设置
 一个快速开发 Go 应用的 HTTP 框架
-20:00 12 May 2014
+01:00 18 May 2014
 Tags: beego
 
 astaxie
@@ -264,3 +264,22 @@ beego最初设计理念来源于 tornado, 即RESTFul的Controller实现
 					ctx.Output.Body([]byte("crminfo"))
 			}),
 		)
+* 如何规划项目的路由
+- 简单的应用采用routers/router.go
+- 多模块的采用namespace，然后引用的地方注册
+
+	beego.AddNamespce(ns)
+	
+	|-- beeapi
+	|-- conf
+	|   `-- app.conf
+	|-- controllers
+	|   `-- default.go
+	|-- main.go
+	|-- models
+	|   `-- object.go
+	|-- routers
+	|   `-- router.go
+	`-- tests
+	    `-- default_test.go	
+		

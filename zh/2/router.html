@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Beego的路由设置</title>
+    <title>Beego入门教程之二——路由设置</title>
     <meta charset='utf-8'>
     <script src='static/slides.js'></script>
   </head>
@@ -12,9 +12,9 @@
     <section class='slides layout-widescreen'>
       
       <article>
-        <h1>Beego的路由设置</h1>
+        <h1>Beego入门教程之二——路由设置</h1>
         <h3>一个快速开发 Go 应用的 HTTP 框架</h3>
-        <h3>12 May 2014</h3>
+        <h3>18 May 2014</h3>
         
           <div class="presenter">
             
@@ -682,6 +682,40 @@ beego.Router(&#34;/api/delete&#34;,&amp;RestController{},&#34;delete:DeleteFood&
                 ctx.Output.Body([]byte(&#34;crminfo&#34;))
         }),
     )</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>如何规划项目的路由</h3>
+        
+  <ul>
+  
+    <li>简单的应用采用routers/router.go</li>
+  
+    <li>多模块的采用namespace，然后引用的地方注册</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>beego.AddNamespce(ns)
+
+|-- beeapi
+|-- conf
+|   `-- app.conf
+|-- controllers
+|   `-- default.go
+|-- main.go
+|-- models
+|   `-- object.go
+|-- routers
+|   `-- router.go
+`-- tests
+    `-- default_test.go</pre></div>
   
 
       
