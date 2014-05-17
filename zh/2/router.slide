@@ -1,0 +1,266 @@
+Beego的路由设置
+一个快速开发 Go 应用的 HTTP 框架
+20:00 12 May 2014
+Tags: beego
+
+astaxie
+http://github.com/astaxie
+http://weibo.com/533452688
+http://twitter.com/astaxie
+
+* 大纲
+- beego的逻辑图
+- 什么是路由
+- beego路由类型
+- 基础路由
+- 参数路由
+- 正则路由
+- 映射路由
+- 自动化路由
+- namespace
+- 如何规划项目的路由
+
+* beego 的逻辑图
+
+.image http://beego.me/docs/images/flow.png
+
+* 什么是路由
+
+路由说白了就是根据用户的请求找到需要执行的函数或者controller
+
+	GET     /v1/shop/nike  ShopController  Get
+	DELETE  /v1/shop/nike  ShopController  Delete
+	
+	GET     /v1/notallowed  notallowed function
+
+* beego路由类型
+
+beego 从新版本开始就支持个三种方式的路由
+
+1. 函数级别的注册 RESTFul 的方式注册
+2. controller 级别的注册自动化的映射
+3. 更自由化的handler注册,即只要实现了 ServeHTTP(respose, request)函数的都可以
+
+* 基础路由之函数
+函数级别的路由函数支持如下:
+
+- beego.Get(router, beego.FilterFunc)
+- beego.Post(router, beego.FilterFunc)
+- beego.Put(router, beego.FilterFunc)
+- beego.Head(router, beego.FilterFunc)
+- beego.Options(router, beego.FilterFunc)
+- beego.Delete(router, beego.FilterFunc)
+- beego.Any(router, beego.FilterFunc)
+
+* 基础路由函数代码示例
+
+基础 GET 请求
+
+	beego.Get("/", func(ctx *context.Context){
+		ctx.Output.Body([]byte("hello world"))
+	})
+
+基础  POST 请求		
+
+	beego.Post("/foo", func(ctx *context.Context){
+		ctx.Output.Body([]byte("bar"))
+	})
+
+任意  HTTP 请求
+
+	beego.Any("/alice", func(ctx *context.Context){
+		ctx.Output.Body([]byte("bob"))
+	})	
+		
+* 基础路由之Controller
+beego最初设计理念来源于 tornado, 即RESTFul的Controller实现
+
+- beego.Router(router, controller)
+
+	type ObjectController struct {
+		beego.Controller
+	}
+	
+	func (this *ObjectController) Get() {
+		obs := models.GetAll()
+		this.Data["json"] = obs
+		this.ServeJson()
+	}
+
+    beego.Router("/object", &ObjectController{})
+
+* 参数路由之一
+这个参数路由适用于函数和controller设置，解析之后的数据全部可以在ctx.Input.Param()获取
+
+为了用户更加方便的路由设置，beego 参考了 sinatra 的路由实现，支持多种方式的路由：
+
+- beego.Router("/api/:id", &controllers.RController{})
+
+	默认匹配   //匹配 /api/123    :id = 123  可以匹配/api/这个URL
+	
+- beego.Router("/api/:id!", &controllers.RController{})
+
+	默认匹配   //匹配 /api/123    :id = 123  不可以匹配/api/这个URL	
+
+- beego.Router("/api/:id([0-9]+)", &controllers.RController{})
+
+	自定义正则匹配 //匹配 /api/123 :id = 123
+
+* 参数路由之二
+
+- beego.Router("/news/:all", &controllers.RController{})
+
+	全匹配方式 //匹配 /news/path/to/123.html :all= path/to/123.html
+
+- beego.Router("/user/:username([\w]+)", &controllers.RController{})
+
+	正则字符串匹配 //匹配 /user/astaxie :username = astaxie
+
+- beego.Router("/download/\*.\*", &controllers.RController{})
+
+	*匹配方式 //匹配 /download/file/api.xml :path= file/api :ext=xml
+
+- beego.Router("/download/ceshi/*", &controllers.RController{})
+
+	*全匹配方式 //匹配 /download/ceshi/file/api.json :splat=file/api.json
+
+* 参数路由之三
+
+- beego.Router("/:id:int", &controllers.RController{})
+
+	int 类型设置方式，匹配 :id为int类型，框架帮你实现了正则([0-9]+)
+
+- beego.Router("/:hi:string", &controllers.RController{})
+
+	string 类型设置方式，匹配 :hi为string类型。框架帮你实现了正则([\w]+)
+
+- beego.Router("/cms_:id([0-9]+).html", &controllers.CmsController{})
+
+	带有前缀的自定义正则 //匹配 :id为正则类型。匹配 cms_123.html这样的url :id = 123
+
+* 映射路由之展示
+以下是一个 RESTful 的设计示例：
+
+	beego.Router("/api/list",&RestController{},"*:ListFood")
+	beego.Router("/api/create",&RestController{},"post:CreateFood")
+	beego.Router("/api/update",&RestController{},"put:UpdateFood")
+	beego.Router("/api/delete",&RestController{},"delete:DeleteFood")
+	
+以下是多个 HTTP Method 指向同一个函数的示例：
+
+	beego.Router("/api",&RestController{},"get,post:ApiFunc")
+	
+以下是不同的 method 对应不同的函数，通过 ; 进行分割的示例：
+
+	beego.Router("/simple",&SimpleController{},"get:GetFunc;post:PostFunc")
+
+* 映射路由之详解
+
+可用的 HTTP Method：
+
+- *：包含一下所有的函数
+- get ：GET 请求
+- post ：POST 请求
+- put ：PUT 请求
+- delete ：DELETE 请求
+- patch ：PATCH 请求
+- options ：OPTIONS 请求
+- head ：HEAD 请求
+
+如果同时存在 * 和对应的 HTTP Method，那么优先执行 HTTP Method 的方法，例如同时注册了如下所示的路由：
+
+	beego.Router("/simple",&SimpleController{},"*:AllFunc;post:PostFunc")
+
+* 自动化路由
+	beego.AutoRouter(&controllers.ObjectController{})
+
+请求映射如下：
+
+	/object/login   调用 ObjectController 中的 Login 方法
+	/object/logout  调用 ObjectController 中的 Logout 方法
+	
+除了前缀两个` /:controller/:method `的匹配之外，剩下的 url beego会帮你自动化解析为参数，保存在 `this.Ctx.Input.Param` 当中：
+
+	/object/blog/2013/09/12  调用 ObjectController 中的 Blog 方法，参数如下：map[0:2013 1:09 2:12]
+方法名在内部是保存了用户设置的，例如 Login，url 匹配的时候都会转化为小写，所以，`/object/LOGIN` 这样的 `url` 也一样可以路由到用户定义的 `Login` 方法中。
+
+* 自动化路由之API模式解析
+现在已经可以通过自动识别出来下面类似的所有url，都会把请求分发到 `controller` 的 `simple` 方法：
+
+	/controller/simple
+	/controller/simple.html
+	/controller/simple.json
+	/controller/simple.rss
+	
+可以通过 `this.Ctx.Input.Param(":ext")` 获取后缀名。
+
+* namespace之示例
+这个我主要是看了两个框架sintra和laravel的使用方式之后进行的设计和开发
+
+	ns := beego.NewNamespace("/v1").
+		Filter("before", auth).
+		Get("/notallowed", func(ctx *context.Context) {
+			ctx.Output.Body([]byte("notAllowed"))
+		}).
+		Router("/version", &AdminController{}, "get:ShowAPIVersion").
+		Router("/changepassword", &UserController{}).
+		Namespace(
+			beego.NewNamespace("/shop").
+				Filter("before", sentry).
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("notAllowed"))
+			}),
+		)
+
+* namespace之接口详解一
+
+- NewNamespace(prefix string)
+
+	初始化namespace对象,下面这些函数都是namespace对象的方法
+
+- Cond(cond namespaceCond)  
+
+	支持满足条件的就执行该namespace,不满足就不执行,例如你可以根据域名来控制namespace
+	
+- Filter(action string, filter FilterFunc)
+
+	action表示你需要执行的位置,before和after分别表示执行逻辑之前和执行逻辑之后的filter
+	
+- Router(rootpath string, c ControllerInterface, mappingMethods ...string)
+
+* namespace之接口详解二
+		
+- AutoRouter(c ControllerInterface)
+- AutoPrefix(prefix string, c ControllerInterface)
+- Get(rootpath string, f FilterFunc)
+- Post(rootpath string, f FilterFunc)
+- Delete(rootpath string, f FilterFunc)
+- Put(rootpath string, f FilterFunc)
+- Head(rootpath string, f FilterFunc)
+- Options(rootpath string, f FilterFunc)
+- Patch(rootpath string, f FilterFunc)
+- Any(rootpath string, f FilterFunc)
+- Handler(rootpath string, h http.Handler)
+
+	上面这些都是设置路由的函数,详细的使用和前面beego的路由函数是一样的
+	
+* namespace之接口详解三
+嵌套其他namespace
+
+- Namespace(ns *Namespace)
+
+	ns := beego.NewNamespace("/v1").
+		Namespace(
+			beego.NewNamespace("/shop").
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("shopinfo"))
+			}),
+			beego.NewNamespace("/order").
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("orderinfo"))
+			}),
+			beego.NewNamespace("/crm").
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("crminfo"))
+			}),
+		)

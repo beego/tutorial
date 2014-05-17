@@ -1,0 +1,709 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego的路由设置</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego的路由设置</h1>
+        <h3>一个快速开发 Go 应用的 HTTP 框架</h3>
+        <h3>12 May 2014</h3>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    astaxie
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>大纲</h3>
+        
+  <ul>
+  
+    <li>beego的逻辑图</li>
+  
+    <li>什么是路由</li>
+  
+    <li>beego路由类型</li>
+  
+    <li>基础路由</li>
+  
+    <li>参数路由</li>
+  
+    <li>正则路由</li>
+  
+    <li>映射路由</li>
+  
+    <li>自动化路由</li>
+  
+    <li>namespace</li>
+  
+    <li>如何规划项目的路由</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego 的逻辑图</h3>
+        
+<div class="image">
+  <img src="http://beego.me/docs/images/flow.png">
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>什么是路由</h3>
+        
+  
+  <p>
+    路由说白了就是根据用户的请求找到需要执行的函数或者controller
+  </p>
+  
+
+  
+  <div class="code"><pre>GET     /v1/shop/nike  ShopController  Get
+DELETE  /v1/shop/nike  ShopController  Delete
+
+GET     /v1/notallowed  notallowed function</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego路由类型</h3>
+        
+  
+  <p>
+    beego 从新版本开始就支持个三种方式的路由
+  </p>
+  
+
+  
+  <p>
+    1. 函数级别的注册 RESTFul 的方式注册
+<br>
+
+    2. controller 级别的注册自动化的映射
+<br>
+
+    3. 更自由化的handler注册,即只要实现了 ServeHTTP(respose, request)函数的都可以
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>基础路由之函数</h3>
+        
+  
+  <p>
+    函数级别的路由函数支持如下:
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Get(router, beego.FilterFunc)</li>
+  
+    <li>beego.Post(router, beego.FilterFunc)</li>
+  
+    <li>beego.Put(router, beego.FilterFunc)</li>
+  
+    <li>beego.Head(router, beego.FilterFunc)</li>
+  
+    <li>beego.Options(router, beego.FilterFunc)</li>
+  
+    <li>beego.Delete(router, beego.FilterFunc)</li>
+  
+    <li>beego.Any(router, beego.FilterFunc)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>基础路由函数代码示例</h3>
+        
+  
+  <p>
+    基础 GET 请求
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Get(&#34;/&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;hello world&#34;))
+})</pre></div>
+  
+
+  
+  <p>
+    基础  POST 请求		
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Post(&#34;/foo&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;bar&#34;))
+})</pre></div>
+  
+
+  
+  <p>
+    任意  HTTP 请求
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Any(&#34;/alice&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;bob&#34;))
+})</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>基础路由之Controller</h3>
+        
+  
+  <p>
+    beego最初设计理念来源于 tornado, 即RESTFul的Controller实现
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Router(router, controller)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>type ObjectController struct {
+    beego.Controller
+}
+
+func (this *ObjectController) Get() {
+    obs := models.GetAll()
+    this.Data[&#34;json&#34;] = obs
+    this.ServeJson()
+}</pre></div>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/object&#34;, &amp;ObjectController{})</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>参数路由之一</h3>
+        
+  
+  <p>
+    这个参数路由适用于函数和controller设置，解析之后的数据全部可以在ctx.Input.Param()获取
+  </p>
+  
+
+  
+  <p>
+    为了用户更加方便的路由设置，beego 参考了 sinatra 的路由实现，支持多种方式的路由：
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>默认匹配   //匹配 /api/123    :id = 123  可以匹配/api/这个URL</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id!&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>默认匹配   //匹配 /api/123    :id = 123  不可以匹配/api/这个URL</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id([0-9]+)&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>自定义正则匹配 //匹配 /api/123 :id = 123</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>参数路由之二</h3>
+        
+  <ul>
+  
+    <li>beego.Router(&#34;/news/:all&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>全匹配方式 //匹配 /news/path/to/123.html :all= path/to/123.html</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/user/:username([\w]+)&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>正则字符串匹配 //匹配 /user/astaxie :username = astaxie</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/download/\*.\*&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>*匹配方式 //匹配 /download/file/api.xml :path= file/api :ext=xml</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/download/ceshi/*&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>*全匹配方式 //匹配 /download/ceshi/file/api.json :splat=file/api.json</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>参数路由之三</h3>
+        
+  <ul>
+  
+    <li>beego.Router(&#34;/:id:int&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>int 类型设置方式，匹配 :id为int类型，框架帮你实现了正则([0-9]&#43;)</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/:hi:string&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>string 类型设置方式，匹配 :hi为string类型。框架帮你实现了正则([\w]&#43;)</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/cms_:id([0-9]+).html&#34;, &amp;controllers.CmsController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>带有前缀的自定义正则 //匹配 :id为正则类型。匹配 cms_123.html这样的url :id = 123</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>映射路由之展示</h3>
+        
+  
+  <p>
+    以下是一个 RESTful 的设计示例：
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api/list&#34;,&amp;RestController{},&#34;*:ListFood&#34;)
+beego.Router(&#34;/api/create&#34;,&amp;RestController{},&#34;post:CreateFood&#34;)
+beego.Router(&#34;/api/update&#34;,&amp;RestController{},&#34;put:UpdateFood&#34;)
+beego.Router(&#34;/api/delete&#34;,&amp;RestController{},&#34;delete:DeleteFood&#34;)</pre></div>
+  
+
+  
+  <p>
+    以下是多个 HTTP Method 指向同一个函数的示例：
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api&#34;,&amp;RestController{},&#34;get,post:ApiFunc&#34;)</pre></div>
+  
+
+  
+  <p>
+    以下是不同的 method 对应不同的函数，通过 ; 进行分割的示例：
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/simple&#34;,&amp;SimpleController{},&#34;get:GetFunc;post:PostFunc&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>映射路由之详解</h3>
+        
+  
+  <p>
+    可用的 HTTP Method：
+  </p>
+  
+
+  <ul>
+  
+    <li>*：包含一下所有的函数</li>
+  
+    <li>get ：GET 请求</li>
+  
+    <li>post ：POST 请求</li>
+  
+    <li>put ：PUT 请求</li>
+  
+    <li>delete ：DELETE 请求</li>
+  
+    <li>patch ：PATCH 请求</li>
+  
+    <li>options ：OPTIONS 请求</li>
+  
+    <li>head ：HEAD 请求</li>
+  
+  </ul>
+
+  
+  <p>
+    如果同时存在 * 和对应的 HTTP Method，那么优先执行 HTTP Method 的方法，例如同时注册了如下所示的路由：
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/simple&#34;,&amp;SimpleController{},&#34;*:AllFunc;post:PostFunc&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>自动化路由</h3>
+        
+  
+  <div class="code"><pre>beego.AutoRouter(&amp;controllers.ObjectController{})</pre></div>
+  
+
+  
+  <p>
+    请求映射如下：
+  </p>
+  
+
+  
+  <div class="code"><pre>/object/login   调用 ObjectController 中的 Login 方法
+/object/logout  调用 ObjectController 中的 Logout 方法</pre></div>
+  
+
+  
+  <p>
+    除了前缀两个` /:controller/:method `的匹配之外，剩下的 url beego会帮你自动化解析为参数，保存在 <code>this.Ctx.Input.Param</code> 当中：
+  </p>
+  
+
+  
+  <div class="code"><pre>/object/blog/2013/09/12  调用 ObjectController 中的 Blog 方法，参数如下：map[0:2013 1:09 2:12]</pre></div>
+  
+
+  
+  <p>
+    方法名在内部是保存了用户设置的，例如 Login，url 匹配的时候都会转化为小写，所以，`/object/LOGIN` 这样的 <code>url</code> 也一样可以路由到用户定义的 <code>Login</code> 方法中。
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>自动化路由之API模式解析</h3>
+        
+  
+  <p>
+    现在已经可以通过自动识别出来下面类似的所有url，都会把请求分发到 <code>controller</code> 的 <code>simple</code> 方法：
+  </p>
+  
+
+  
+  <div class="code"><pre>/controller/simple
+/controller/simple.html
+/controller/simple.json
+/controller/simple.rss</pre></div>
+  
+
+  
+  <p>
+    可以通过 <code>this.Ctx.Input.Param(&#34;:ext&#34;)</code> 获取后缀名。
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之示例</h3>
+        
+  
+  <p>
+    这个我主要是看了两个框架sintra和laravel的使用方式之后进行的设计和开发
+  </p>
+  
+
+  
+  <div class="code"><pre>ns := beego.NewNamespace(&#34;/v1&#34;).
+    Filter(&#34;before&#34;, auth).
+    Get(&#34;/notallowed&#34;, func(ctx *context.Context) {
+        ctx.Output.Body([]byte(&#34;notAllowed&#34;))
+    }).
+    Router(&#34;/version&#34;, &amp;AdminController{}, &#34;get:ShowAPIVersion&#34;).
+    Router(&#34;/changepassword&#34;, &amp;UserController{}).
+    Namespace(
+        beego.NewNamespace(&#34;/shop&#34;).
+            Filter(&#34;before&#34;, sentry).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;notAllowed&#34;))
+        }),
+    )</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之接口详解一</h3>
+        
+  <ul>
+  
+    <li>NewNamespace(prefix string)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>初始化namespace对象,下面这些函数都是namespace对象的方法</pre></div>
+  
+
+  <ul>
+  
+    <li>Cond(cond namespaceCond)  </li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>支持满足条件的就执行该namespace,不满足就不执行,例如你可以根据域名来控制namespace</pre></div>
+  
+
+  <ul>
+  
+    <li>Filter(action string, filter FilterFunc)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>action表示你需要执行的位置,before和after分别表示执行逻辑之前和执行逻辑之后的filter</pre></div>
+  
+
+  <ul>
+  
+    <li>Router(rootpath string, c ControllerInterface, mappingMethods ...string)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之接口详解二</h3>
+        
+  <ul>
+  
+    <li>AutoRouter(c ControllerInterface)</li>
+  
+    <li>AutoPrefix(prefix string, c ControllerInterface)</li>
+  
+    <li>Get(rootpath string, f FilterFunc)</li>
+  
+    <li>Post(rootpath string, f FilterFunc)</li>
+  
+    <li>Delete(rootpath string, f FilterFunc)</li>
+  
+    <li>Put(rootpath string, f FilterFunc)</li>
+  
+    <li>Head(rootpath string, f FilterFunc)</li>
+  
+    <li>Options(rootpath string, f FilterFunc)</li>
+  
+    <li>Patch(rootpath string, f FilterFunc)</li>
+  
+    <li>Any(rootpath string, f FilterFunc)</li>
+  
+    <li>Handler(rootpath string, h http.Handler)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>上面这些都是设置路由的函数,详细的使用和前面beego的路由函数是一样的</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之接口详解三</h3>
+        
+  
+  <p>
+    嵌套其他namespace
+  </p>
+  
+
+  <ul>
+  
+    <li>Namespace(ns *Namespace)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>ns := beego.NewNamespace(&#34;/v1&#34;).
+    Namespace(
+        beego.NewNamespace(&#34;/shop&#34;).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;shopinfo&#34;))
+        }),
+        beego.NewNamespace(&#34;/order&#34;).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;orderinfo&#34;))
+        }),
+        beego.NewNamespace(&#34;/crm&#34;).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;crminfo&#34;))
+        }),
+    )</pre></div>
+  
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    astaxie
+  </p>
+  
+<p class="link"><a href="http://github.com/astaxie" target="_blank">http://github.com/astaxie</a></p><p class="link"><a href="http://weibo.com/533452688" target="_blank">http://weibo.com/533452688</a></p><p class="link"><a href="http://twitter.com/astaxie" target="_blank">http://twitter.com/astaxie</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>
