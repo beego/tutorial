@@ -116,7 +116,7 @@ beego最初设计理念来源于 tornado, 即RESTFul的Controller实现
 
 	正则字符串匹配 //匹配 /user/astaxie :username = astaxie
 
-- beego.Router("/download/\*.\*", &controllers.RController{})
+- beego.Router("/download/*.*", &controllers.RController{})
 
 	*匹配方式 //匹配 /download/file/api.xml :path= file/api :ext=xml
 
@@ -269,6 +269,7 @@ beego最初设计理念来源于 tornado, 即RESTFul的Controller实现
 - 多模块的采用namespace，然后引用的地方注册
 
 	beego.AddNamespce(ns)
+目录
 	
 	|-- beeapi
 	|-- conf
