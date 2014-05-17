@@ -317,7 +317,7 @@ func (this *ObjectController) Get() {
 
   <ul>
   
-    <li>beego.Router(&#34;/download/\*.\*&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Router(&#34;/download/*.*&#34;, &amp;controllers.RController{})</li>
   
   </ul>
 
@@ -702,9 +702,17 @@ beego.Router(&#34;/api/delete&#34;,&amp;RestController{},&#34;delete:DeleteFood&
   </ul>
 
   
-  <div class="code"><pre>beego.AddNamespce(ns)
+  <div class="code"><pre>beego.AddNamespce(ns)</pre></div>
+  
 
-|-- beeapi
+  
+  <p>
+    目录
+  </p>
+  
+
+  
+  <div class="code"><pre>|-- beeapi
 |-- conf
 |   `-- app.conf
 |-- controllers
