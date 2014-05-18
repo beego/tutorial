@@ -5,10 +5,12 @@ beego的文档应该还算比较完整的,但是我还是希望通过更多地�
 
 [第一课: beego的设计思路](http://go-talks.appspot.com/github.com/beego/tutorial/zh/1/why_beego.slide)
   - 土豆: http://www.tudou.com/programs/view/EliSnrCpCi4/
-  - 优酷: http://v.youku.com/v_show/id_XNzEwMTczNzY4.html
   - 网盘下载地址: http://pan.baidu.com/s/1pJO7btD
+  - 51CTO: http://edu.51cto.com/lesson/id-24341.html
 
-第二课: beego的路由设置
+[第二课: beego的路由设置](http://go-talks.appspot.com/github.com/beego/tutorial/zh/2/router.slide)
+  - 土豆: http://www.tudou.com/programs/view/mid55HCg1EY/
+  - 网盘下载地址: http://pan.baidu.com/s/1o6jXSc6
 
 第三课: beego的参数读取
 
