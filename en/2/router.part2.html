@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego Framework Tutorials - 2 - Routing (part 2 of 3)</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego Framework Tutorials - 2 - Routing (part 2 of 3)</h1>
+        <h3>A Go HTTP framework for developing HTTP application rapidly</h3>
+        
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Content</h3>
+        
+  <ul>
+  
+    <li>beego&#39;s router URI types</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router URI types</h3>
+        
+  
+  <p>
+    -- Basic routers
+<br>
+
+    -- Parameter routers, Regex routers
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Basic router</h3>
+        
+  
+  <p>
+    Basic GET request
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Get(&#34;/&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;hello world&#34;))
+})</pre></div>
+  
+
+  
+  <p>
+    Basic POST request
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Post(&#34;/foo&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;bar&#34;))
+})</pre></div>
+  
+
+  
+  <p>
+    Any HTTP request
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Any(&#34;/alice&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;bob&#34;))
+})</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers, Regex routers</h3>
+        
+  
+  <p>
+    This parameter router suits for function and Controller. The parameters can be got from ctx.Input.Param()
+  </p>
+  
+
+  
+  <p>
+    beego inspired by sinatra&#39;s router:
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Default matching  //matching /api/123    :id = 123  also matching /api/</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id!&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Default matching  //matching /api/123    :id = 123  doesn&#39;t match /api/</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id([0-9]+)&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Regex matching //matching /api/123</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers, Regex routers</h3>
+        
+  <ul>
+  
+    <li>beego.Router(&#34;/news/:all&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Full matching //matching /news/path/to/123.html :all= path/to/123.html</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/user/:username([\w]+)&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Regex string matching //matching /user/astaxie :username = astaxie</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/download/\*.\*&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>* matching //matching /download/file/api.xml :path= file/api :ext=xml</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/download/*&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>* full matching //matching /download/file/api.json :splat=file/api.json</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers, Regex routers</h3>
+        
+  <ul>
+  
+    <li>beego.Router(&#34;/:id:int&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>int type, matching :id is int type, same as regex ([0-9]&#43;)</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/:hi:string&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>string type, matching :hi is string type。same as ([\w]&#43;)</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/cms_:id([0-9]+).html&#34;, &amp;controllers.CmsController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>custom regex with prefix //matching :id is regex type, matching cms_123.html, :id = 123</pre></div>
+  
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+<p class="link"><a href="http://github.com/lei-cao" target="_blank">http://github.com/lei-cao</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>

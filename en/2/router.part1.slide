@@ -1,0 +1,150 @@
+Beego Framework Tutorials - 2 - Routing (part 1 of 3)
+A Go HTTP framework for developing HTTP application rapidly
+
+By Lei Cao
+http://github.com/lei-cao
+
+* Content
+- beego application flow
+- What is a router?
+- beego's router processor function types
+
+* beego application flow
+
+.image http://beego.me/docs/images/flow.png
+
+* What is a router?
+
+In one sentence: finding the function to process the requested URI.
+
+URI and processor function
+
+	GET     /v1/shop/nike  ShopController  Get
+	DELETE  /v1/shop/nike  ShopController  Delete
+	
+	GET     /v1/notallowed  notallowed function
+
+* beego's router processor function types
+
+beego supports three types of functions since version 1.2.0
+
+1. function level RESTFul routers
+2. controller level automatic routers
+3. more flexible handler router. For all the functions who implemented ServeHTTP(respose, request)
+
+
+* beego's router processor function types
+1. function level RESTFul routers
+
+- Get(rootpath string, f FilterFunc)
+- Post(rootpath string, f FilterFunc)
+- Delete(rootpath string, f FilterFunc)
+- Put(rootpath string, f FilterFunc)
+- Head(rootpath string, f FilterFunc)
+- Options(rootpath string, f FilterFunc)
+- Patch(rootpath string, f FilterFunc)
+- Any(rootpath string, f FilterFunc)
+
+		
+* beego's router processor function types
+2. controller level automatic routers
+
+- Router(router, controller)
+
+    type ObjectController struct {
+        beego.Controller
+    }
+    
+    func (this *ObjectController) Get() {
+        obs := models.GetAll()
+        this.Data["json"] = obs
+        this.ServeJson()
+    }
+
+    beego.Router("/object", &ObjectController{})
+
+
+* Mapping routers
+
+RESTFul router:
+
+	beego.Router("/api/list",&RestController{},"*:ListFood")
+	beego.Router("/api/create",&RestController{},"post:CreateFood")
+	beego.Router("/api/update",&RestController{},"put:UpdateFood")
+	beego.Router("/api/delete",&RestController{},"delete:DeleteFood")
+	
+Multiple HTTP Methods mapping to one function:
+
+	beego.Router("/api",&RestController{},"get,post:ApiFunc")
+	
+Different HTTP Methods map to different function, separated by `;`
+
+	beego.Router("/simple",&SimpleController{},"get:GetFunc;post:PostFunc")
+
+* Mapping routers
+
+Available HTTP Methods:
+
+- *：Including all the methods below
+- get :GET
+- post :POST
+- put :PUT
+- delete :DELETE
+- patch :PATCH
+- options :OPTIONS
+- head :HEAD
+
+If both * and HTTP Methods matched, HTTP Methods have high priority and will the run first. Fox example:
+
+	beego.Router("/simple",&SimpleController{},"*:AllFunc;post:PostFunc")
+
+
+- AutoRouter(c ControllerInterface)
+- AutoPrefix(prefix string, c ControllerInterface)
+
+* beego's router processor function types
+3. more flexible handler router. For all the functions who implemented ServeHTTP(respose, request)
+- Handler(rootpath string, h http.Handler)
+
+Integrating other services easily
+
+	import (
+	    "http"
+	    "github.com/gorilla/rpc"
+	    "github.com/gorilla/rpc/json"
+	)
+
+	func init() {
+	    s := rpc.NewServer()
+	    s.RegisterCodec(json.NewCodec(), "application/json")
+	    s.RegisterService(new(HelloService), "")
+	    beego.Handler("/rpc", s)
+	}
+
+
+* Automatic routers
+	beego.AutoRouter(&controllers.ObjectController{})
+
+It will map to
+
+	/object/login   Call Login method in ObjectController
+	/object/logout  Call Logout method in ObjectController
+	
+Except these two prefix mappings ` /:controller/:method `, the rest of the url will be saved in `this.Ctx.Input.Param`
+
+	/object/blog/2013/09/12  Call Blog method in ObjectController with parameters map[0:2013 1:09 2:12]
+
+Login will be converted to lowercase, so `/object/LOGIN` will also map to `Login` method.
+
+* Automatic router for API types parsing
+all the urls below will be send to `simple` function in `controller`
+
+	/controller/simple
+	/controller/simple.html
+	/controller/simple.json
+	/controller/simple.rss
+	
+And you can get the extension by `this.Ctx.Input.Param(":ext")`
+
+- AutoPrefix(prefix string, c ControllerInterface)
+you can set a prefix for the URI, so the requested URI will be parsed by ignoring the prefix.

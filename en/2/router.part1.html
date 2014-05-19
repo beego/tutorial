@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego Framework Tutorials - 2 - Routing (part 1 of 3)</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego Framework Tutorials - 2 - Routing (part 1 of 3)</h1>
+        <h3>A Go HTTP framework for developing HTTP application rapidly</h3>
+        
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Content</h3>
+        
+  <ul>
+  
+    <li>beego application flow</li>
+  
+    <li>What is a router?</li>
+  
+    <li>beego&#39;s router processor function types</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego application flow</h3>
+        
+<div class="image">
+  <img src="http://beego.me/docs/images/flow.png">
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>What is a router?</h3>
+        
+  
+  <p>
+    In one sentence: finding the function to process the requested URI.
+  </p>
+  
+
+  
+  <p>
+    URI and processor function
+  </p>
+  
+
+  
+  <div class="code"><pre>GET     /v1/shop/nike  ShopController  Get
+DELETE  /v1/shop/nike  ShopController  Delete
+
+GET     /v1/notallowed  notallowed function</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    beego supports three types of functions since version 1.2.0
+  </p>
+  
+
+  
+  <p>
+    1. function level RESTFul routers
+<br>
+
+    2. controller level automatic routers
+<br>
+
+    3. more flexible handler router. For all the functions who implemented ServeHTTP(respose, request)
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    1. function level RESTFul routers
+  </p>
+  
+
+  <ul>
+  
+    <li>Get(rootpath string, f FilterFunc)</li>
+  
+    <li>Post(rootpath string, f FilterFunc)</li>
+  
+    <li>Delete(rootpath string, f FilterFunc)</li>
+  
+    <li>Put(rootpath string, f FilterFunc)</li>
+  
+    <li>Head(rootpath string, f FilterFunc)</li>
+  
+    <li>Options(rootpath string, f FilterFunc)</li>
+  
+    <li>Patch(rootpath string, f FilterFunc)</li>
+  
+    <li>Any(rootpath string, f FilterFunc)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    2. controller level automatic routers
+  </p>
+  
+
+  <ul>
+  
+    <li>Router(router, controller)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>type ObjectController struct {
+    beego.Controller
+}
+
+func (this *ObjectController) Get() {
+    obs := models.GetAll()
+    this.Data[&#34;json&#34;] = obs
+    this.ServeJson()
+}
+
+beego.Router(&#34;/object&#34;, &amp;ObjectController{})</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Mapping routers</h3>
+        
+  
+  <p>
+    RESTFul router:
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api/list&#34;,&amp;RestController{},&#34;*:ListFood&#34;)
+beego.Router(&#34;/api/create&#34;,&amp;RestController{},&#34;post:CreateFood&#34;)
+beego.Router(&#34;/api/update&#34;,&amp;RestController{},&#34;put:UpdateFood&#34;)
+beego.Router(&#34;/api/delete&#34;,&amp;RestController{},&#34;delete:DeleteFood&#34;)</pre></div>
+  
+
+  
+  <p>
+    Multiple HTTP Methods mapping to one function:
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api&#34;,&amp;RestController{},&#34;get,post:ApiFunc&#34;)</pre></div>
+  
+
+  
+  <p>
+    Different HTTP Methods map to different function, separated by <code>;</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/simple&#34;,&amp;SimpleController{},&#34;get:GetFunc;post:PostFunc&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Mapping routers</h3>
+        
+  
+  <p>
+    Available HTTP Methods:
+  </p>
+  
+
+  <ul>
+  
+    <li>*：Including all the methods below</li>
+  
+    <li>get :GET</li>
+  
+    <li>post :POST</li>
+  
+    <li>put :PUT</li>
+  
+    <li>delete :DELETE</li>
+  
+    <li>patch :PATCH</li>
+  
+    <li>options :OPTIONS</li>
+  
+    <li>head :HEAD</li>
+  
+  </ul>
+
+  
+  <p>
+    If both * and HTTP Methods matched, HTTP Methods have high priority and will the run first. Fox example:
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/simple&#34;,&amp;SimpleController{},&#34;*:AllFunc;post:PostFunc&#34;)</pre></div>
+  
+
+  <ul>
+  
+    <li>AutoRouter(c ControllerInterface)</li>
+  
+    <li>AutoPrefix(prefix string, c ControllerInterface)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    3. more flexible handler router. For all the functions who implemented ServeHTTP(respose, request)
+<br>
+
+    - Handler(rootpath string, h http.Handler)
+  </p>
+  
+
+  
+  <p>
+    Integrating other services easily
+  </p>
+  
+
+  
+  <div class="code"><pre>import (
+    &#34;http&#34;
+    &#34;github.com/gorilla/rpc&#34;
+    &#34;github.com/gorilla/rpc/json&#34;
+)
+
+func init() {
+    s := rpc.NewServer()
+    s.RegisterCodec(json.NewCodec(), &#34;application/json&#34;)
+    s.RegisterService(new(HelloService), &#34;&#34;)
+    beego.Handler(&#34;/rpc&#34;, s)
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Automatic routers</h3>
+        
+  
+  <div class="code"><pre>beego.AutoRouter(&amp;controllers.ObjectController{})</pre></div>
+  
+
+  
+  <p>
+    It will map to
+  </p>
+  
+
+  
+  <div class="code"><pre>/object/login   Call Login method in ObjectController
+/object/logout  Call Logout method in ObjectController</pre></div>
+  
+
+  
+  <p>
+    Except these two prefix mappings ` /:controller/:method `, the rest of the url will be saved in <code>this.Ctx.Input.Param</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>/object/blog/2013/09/12  Call Blog method in ObjectController with parameters map[0:2013 1:09 2:12]</pre></div>
+  
+
+  
+  <p>
+    Login will be converted to lowercase, so <code>/object/LOGIN</code> will also map to <code>Login</code> method.
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Automatic router for API types parsing</h3>
+        
+  
+  <p>
+    all the urls below will be send to <code>simple</code> function in <code>controller</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>/controller/simple
+/controller/simple.html
+/controller/simple.json
+/controller/simple.rss</pre></div>
+  
+
+  
+  <p>
+    And you can get the extension by <code>this.Ctx.Input.Param(&#34;:ext&#34;)</code>
+  </p>
+  
+
+  <ul>
+  
+    <li>AutoPrefix(prefix string, c ControllerInterface)</li>
+  
+  </ul>
+
+  
+  <p>
+    you can set a prefix for the URI, so the requested URI will be parsed by ignoring the prefix.
+  </p>
+  
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+<p class="link"><a href="http://github.com/lei-cao" target="_blank">http://github.com/lei-cao</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>

@@ -1,0 +1,854 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego Framework Tutorials - 2 - Routing</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego Framework Tutorials - 2 - Routing</h1>
+        <h3>A Go HTTP framework for developing HTTP application rapidly</h3>
+        
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Content</h3>
+        
+  <ul>
+  
+    <li>beego application flow</li>
+  
+    <li>What is router?</li>
+  
+    <li>beego&#39;s router processor function types</li>
+  
+    <li>beego&#39;s router URI types</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>-- Basic routers
+-- Parameter routers, Regex routers
+-- Mapping routers
+-- Automatic routers</pre></div>
+  
+
+  <ul>
+  
+    <li>namespace</li>
+  
+    <li>How to plan and organize routers</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego application flow</h3>
+        
+<div class="image">
+  <img src="http://beego.me/docs/images/flow.png">
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>What is router?</h3>
+        
+  
+  <p>
+    In one sentence: finding the function to process the requested URI.
+  </p>
+  
+
+  
+  <p>
+    URI and processor function
+  </p>
+  
+
+  
+  <div class="code"><pre>GET     /v1/shop/nike  ShopController  Get
+DELETE  /v1/shop/nike  ShopController  Delete
+
+GET     /v1/notallowed  notallowed function</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    beego supports three types of functions since version 1.2.0
+  </p>
+  
+
+  
+  <p>
+    1. function level RESTFul routers
+<br>
+
+    2. controller level automatic routers
+<br>
+
+    3. more flexible handler router. For all the functions who implemented ServeHTTP(respose, request)
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    1. function level RESTFul routers
+  </p>
+  
+
+  <ul>
+  
+    <li>Get(rootpath string, f FilterFunc)</li>
+  
+    <li>Post(rootpath string, f FilterFunc)</li>
+  
+    <li>Delete(rootpath string, f FilterFunc)</li>
+  
+    <li>Put(rootpath string, f FilterFunc)</li>
+  
+    <li>Head(rootpath string, f FilterFunc)</li>
+  
+    <li>Options(rootpath string, f FilterFunc)</li>
+  
+    <li>Patch(rootpath string, f FilterFunc)</li>
+  
+    <li>Any(rootpath string, f FilterFunc)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    2. controller level automatic routers
+  </p>
+  
+
+  <ul>
+  
+    <li>Router(router, controller)</li>
+  
+    <li>AutoRouter(c ControllerInterface)</li>
+  
+    <li>AutoPrefix(prefix string, c ControllerInterface)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function types</h3>
+        
+  
+  <p>
+    3. more flexible handler router. For all the functions who implemented ServeHTTP(respose, request)
+<br>
+
+    - Handler(rootpath string, h http.Handler)
+  </p>
+  
+<p class="link"><a href="https://github.com/gorilla/rpc" target="_blank">gorilla rpc</a></p>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router URI types</h3>
+        
+  
+  <p>
+    -- Basic routers
+<br>
+
+    -- Parameter routers, Regex routers
+<br>
+
+    -- Mapping routers
+<br>
+
+    -- Automatic routers
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Basic router: function level</h3>
+        
+  
+  <p>
+    function level router supports:
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Get(router, beego.FilterFunc)</li>
+  
+    <li>beego.Post(router, beego.FilterFunc)</li>
+  
+    <li>beego.Put(router, beego.FilterFunc)</li>
+  
+    <li>beego.Head(router, beego.FilterFunc)</li>
+  
+    <li>beego.Options(router, beego.FilterFunc)</li>
+  
+    <li>beego.Delete(router, beego.FilterFunc)</li>
+  
+    <li>beego.Any(router, beego.FilterFunc)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Basic router function examples:</h3>
+        
+  
+  <p>
+    Basic GET request
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Get(&#34;/&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;hello world&#34;))
+})</pre></div>
+  
+
+  
+  <p>
+    Basic POST request
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Post(&#34;/foo&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;bar&#34;))
+})</pre></div>
+  
+
+  
+  <p>
+    Any HTTP request
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Any(&#34;/alice&#34;, func(ctx *context.Context){
+    ctx.Output.Body([]byte(&#34;bob&#34;))
+})</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Basic router: Controller level</h3>
+        
+  
+  <p>
+    beego&#39;s router design is originally inpired by tornado&#39;s RESTFul Controller
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Router(router, controller)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>type ObjectController struct {
+    beego.Controller
+}
+
+func (this *ObjectController) Get() {
+    obs := models.GetAll()
+    this.Data[&#34;json&#34;] = obs
+    this.ServeJson()
+}</pre></div>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/object&#34;, &amp;ObjectController{})</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers (part 1)</h3>
+        
+  
+  <p>
+    This parameter router suits for function and Controller. The parameters can be got from ctx.Input.Param()
+  </p>
+  
+
+  
+  <p>
+    beego inspired by sinatra&#39;s router:
+  </p>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Default matching  //matching /api/123    :id = 123  also matching /api/</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id!&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Default matching  //matching /api/123    :id = 123  doesn&#39;t match /api/</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/api/:id([0-9]+)&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Regex matching //matching /api/123</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers (part 2)</h3>
+        
+  <ul>
+  
+    <li>beego.Router(&#34;/news/:all&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Full matching //matching /news/path/to/123.html :all= path/to/123.html</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/user/:username([\w]+)&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Regex string matching //matching /user/astaxie :username = astaxie</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/download/\*.\*&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>* matching //matching /download/file/api.xml :path= file/api :ext=xml</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/download/*&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>* full matching //matching /download/file/api.json :splat=file/api.json</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers (part 3)</h3>
+        
+  <ul>
+  
+    <li>beego.Router(&#34;/:id:int&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>int type, matching :id is int type, same as regex ([0-9]&#43;)</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/:hi:string&#34;, &amp;controllers.RController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>string type, matching :hi is string type。same as ([\w]&#43;)</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Router(&#34;/cms_:id([0-9]+).html&#34;, &amp;controllers.CmsController{})</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>custom regex with prefix //matching :id is regex type, matching cms_123.html, :id = 123</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Demos</h3>
+        
+  
+  <p>
+    RESTFul router:
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api/list&#34;,&amp;RestController{},&#34;*:ListFood&#34;)
+beego.Router(&#34;/api/create&#34;,&amp;RestController{},&#34;post:CreateFood&#34;)
+beego.Router(&#34;/api/update&#34;,&amp;RestController{},&#34;put:UpdateFood&#34;)
+beego.Router(&#34;/api/delete&#34;,&amp;RestController{},&#34;delete:DeleteFood&#34;)</pre></div>
+  
+
+  
+  <p>
+    Multiple HTTP Methods mapping to one function:
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/api&#34;,&amp;RestController{},&#34;get,post:ApiFunc&#34;)</pre></div>
+  
+
+  
+  <p>
+    Different HTTP Methods map to different function, separated by <code>;</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/simple&#34;,&amp;SimpleController{},&#34;get:GetFunc;post:PostFunc&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Advanced router mapping</h3>
+        
+  
+  <p>
+    Available HTTP Methods:
+  </p>
+  
+
+  <ul>
+  
+    <li>*：Including all the methods below</li>
+  
+    <li>get :GET</li>
+  
+    <li>post :POST</li>
+  
+    <li>put :PUT</li>
+  
+    <li>delete :DELETE</li>
+  
+    <li>patch :PATCH</li>
+  
+    <li>options :OPTIONS</li>
+  
+    <li>head :HEAD</li>
+  
+  </ul>
+
+  
+  <p>
+    If both * and HTTP Methods matched, HTTP Methods have high priority and will the run first. Fox example:
+  </p>
+  
+
+  
+  <div class="code"><pre>beego.Router(&#34;/simple&#34;,&amp;SimpleController{},&#34;*:AllFunc;post:PostFunc&#34;)</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Automatic routers</h3>
+        
+  
+  <div class="code"><pre>beego.AutoRouter(&amp;controllers.ObjectController{})</pre></div>
+  
+
+  
+  <p>
+    It will map to
+  </p>
+  
+
+  
+  <div class="code"><pre>/object/login   Call Login method in ObjectController
+/object/logout  Call Logout method in ObjectController</pre></div>
+  
+
+  
+  <p>
+    Except these two prefix mappings ` /:controller/:method `, the rest of the url will be saved in <code>this.Ctx.Input.Param</code>
+  </p>
+  
+
+  
+  <div class="code"><pre>/object/blog/2013/09/12  Call Blog method in ObjectController with parameters map[0:2013 1:09 2:12]</pre></div>
+  
+
+  
+  <p>
+    方法名在内部是保存了用户设置的，For example, Login will be converted to lowercase, so <code>/object/LOGIN</code> will also map to <code>Login</code> method.
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>自动化路由之API模式解析</h3>
+        
+  
+  <p>
+    现在已经可以通过自动识别出来下面类似的所有url，都会把请求分发到 <code>controller</code> 的 <code>simple</code> 方法：
+  </p>
+  
+
+  
+  <div class="code"><pre>/controller/simple
+/controller/simple.html
+/controller/simple.json
+/controller/simple.rss</pre></div>
+  
+
+  
+  <p>
+    可以通过 <code>this.Ctx.Input.Param(&#34;:ext&#34;)</code> 获取后缀名。
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之示例</h3>
+        
+  
+  <p>
+    这个我主要是看了两个框架sintra和laravel的使用方式之后进行的设计和开发
+  </p>
+  
+
+  
+  <div class="code"><pre>ns := beego.NewNamespace(&#34;/v1&#34;).
+    Filter(&#34;before&#34;, auth).
+    Get(&#34;/notallowed&#34;, func(ctx *context.Context) {
+        ctx.Output.Body([]byte(&#34;notAllowed&#34;))
+    }).
+    Router(&#34;/version&#34;, &amp;AdminController{}, &#34;get:ShowAPIVersion&#34;).
+    Router(&#34;/changepassword&#34;, &amp;UserController{}).
+    Namespace(
+        beego.NewNamespace(&#34;/shop&#34;).
+            Filter(&#34;before&#34;, sentry).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;notAllowed&#34;))
+        }),
+    )</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之接口详解一</h3>
+        
+  <ul>
+  
+    <li>NewNamespace(prefix string)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>初始化namespace对象,下面这些函数都是namespace对象的方法</pre></div>
+  
+
+  <ul>
+  
+    <li>Cond(cond namespaceCond)  </li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>支持满足条件的就执行该namespace,不满足就不执行,例如你可以根据域名来控制namespace</pre></div>
+  
+
+  <ul>
+  
+    <li>Filter(action string, filter FilterFunc)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>action表示你需要执行的位置,before和after分别表示执行逻辑之前和执行逻辑之后的filter</pre></div>
+  
+
+  <ul>
+  
+    <li>Router(rootpath string, c ControllerInterface, mappingMethods ...string)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之接口详解二</h3>
+        
+  <ul>
+  
+    <li>AutoRouter(c ControllerInterface)</li>
+  
+    <li>AutoPrefix(prefix string, c ControllerInterface)</li>
+  
+    <li>Get(rootpath string, f FilterFunc)</li>
+  
+    <li>Post(rootpath string, f FilterFunc)</li>
+  
+    <li>Delete(rootpath string, f FilterFunc)</li>
+  
+    <li>Put(rootpath string, f FilterFunc)</li>
+  
+    <li>Head(rootpath string, f FilterFunc)</li>
+  
+    <li>Options(rootpath string, f FilterFunc)</li>
+  
+    <li>Patch(rootpath string, f FilterFunc)</li>
+  
+    <li>Any(rootpath string, f FilterFunc)</li>
+  
+    <li>Handler(rootpath string, h http.Handler)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>上面这些都是设置路由的函数,详细的使用和前面beego的路由函数是一样的</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>namespace之接口详解三</h3>
+        
+  
+  <p>
+    嵌套其他namespace
+  </p>
+  
+
+  <ul>
+  
+    <li>Namespace(ns *Namespace)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>ns := beego.NewNamespace(&#34;/v1&#34;).
+    Namespace(
+        beego.NewNamespace(&#34;/shop&#34;).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;shopinfo&#34;))
+        }),
+        beego.NewNamespace(&#34;/order&#34;).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;orderinfo&#34;))
+        }),
+        beego.NewNamespace(&#34;/crm&#34;).
+            Get(&#34;/:id&#34;, func(ctx *context.Context) {
+                ctx.Output.Body([]byte(&#34;crminfo&#34;))
+        }),
+    )</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>如何规划项目的路由</h3>
+        
+  <ul>
+  
+    <li>简单的应用采用routers/router.go</li>
+  
+    <li>多模块的采用namespace，然后引用的地方注册</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>beego.AddNamespce(ns)
+
+|-- beeapi
+|-- conf
+|   `-- app.conf
+|-- controllers
+|   `-- default.go
+|-- main.go
+|-- models
+|   `-- object.go
+|-- routers
+|   `-- router.go
+`-- tests
+    `-- default_test.go</pre></div>
+  
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+<p class="link"><a href="http://github.com/lei-cao" target="_blank">http://github.com/lei-cao</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>

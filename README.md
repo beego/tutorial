@@ -9,7 +9,11 @@ We will teach you Beego's every components, the code logic and how to use Beego'
 
 [Beego Framework Tutorials - 1 - Introduction to Beego](http://go-talks.appspot.com/github.com/beego/tutorial/en/1/why_beego.slide) Video: [Youtube](https://www.youtube.com/watch?v=zvXDgfoUKFY)
 
-Beego Framework Tutorials - 2 - Routing
+[Beego Framework Tutorials - 2 - Routing (part 1 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part1.slide) Video: [Youtube](http://www.youtube.com/watch?v=LvAFH-oLvqY)
+
+[Beego Framework Tutorials - 2 - Routing (part 2 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part2.slide)
+
+[Beego Framework Tutorials - 2 - Routing (part 3 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part3.slide)
 
 Beego Framework Tutorials - 3 - Accessing Parameters
 

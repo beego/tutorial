@@ -1,0 +1,99 @@
+Beego Framework Tutorials - 2 - Routing (part 3 of 3)
+A Go HTTP framework for developing HTTP application rapidly
+
+By Lei Cao
+http://github.com/lei-cao
+
+* Content
+- namespace
+- How to plan and organize routers
+
+* namespace之示例
+这个我主要是看了两个框架sintra和laravel的使用方式之后进行的设计和开发
+
+	ns := beego.NewNamespace("/v1").
+		Filter("before", auth).
+		Get("/notallowed", func(ctx *context.Context) {
+			ctx.Output.Body([]byte("notAllowed"))
+		}).
+		Router("/version", &AdminController{}, "get:ShowAPIVersion").
+		Router("/changepassword", &UserController{}).
+		Namespace(
+			beego.NewNamespace("/shop").
+				Filter("before", sentry).
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("notAllowed"))
+			}),
+		)
+
+* namespace之接口详解一
+
+- NewNamespace(prefix string)
+
+	初始化namespace对象,下面这些函数都是namespace对象的方法
+
+- Cond(cond namespaceCond)  
+
+	支持满足条件的就执行该namespace,不满足就不执行,例如你可以根据域名来控制namespace
+	
+- Filter(action string, filter FilterFunc)
+
+	action表示你需要执行的位置,before和after分别表示执行逻辑之前和执行逻辑之后的filter
+	
+- Router(rootpath string, c ControllerInterface, mappingMethods ...string)
+
+* namespace之接口详解二
+		
+- AutoRouter(c ControllerInterface)
+- AutoPrefix(prefix string, c ControllerInterface)
+- Get(rootpath string, f FilterFunc)
+- Post(rootpath string, f FilterFunc)
+- Delete(rootpath string, f FilterFunc)
+- Put(rootpath string, f FilterFunc)
+- Head(rootpath string, f FilterFunc)
+- Options(rootpath string, f FilterFunc)
+- Patch(rootpath string, f FilterFunc)
+- Any(rootpath string, f FilterFunc)
+- Handler(rootpath string, h http.Handler)
+
+	上面这些都是设置路由的函数,详细的使用和前面beego的路由函数是一样的
+	
+* namespace之接口详解三
+嵌套其他namespace
+
+- Namespace(ns *Namespace)
+
+	ns := beego.NewNamespace("/v1").
+		Namespace(
+			beego.NewNamespace("/shop").
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("shopinfo"))
+			}),
+			beego.NewNamespace("/order").
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("orderinfo"))
+			}),
+			beego.NewNamespace("/crm").
+				Get("/:id", func(ctx *context.Context) {
+					ctx.Output.Body([]byte("crminfo"))
+			}),
+		)
+* 如何规划项目的路由
+- 简单的应用采用routers/router.go
+- 多模块的采用namespace，然后引用的地方注册
+
+	beego.AddNamespce(ns)
+	
+	|-- beeapi
+	|-- conf
+	|   `-- app.conf
+	|-- controllers
+	|   `-- default.go
+	|-- main.go
+	|-- models
+	|   `-- object.go
+	|-- routers
+	|   `-- router.go
+	`-- tests
+	    `-- default_test.go	
+		
