@@ -1,82 +1,90 @@
-Beego Framework Tutorials - 2 - Routing (part 2 of 3)
+Beego Framework Tutorials - 2 - Routing URI Patterns (part 2 of 3)
 A Go HTTP framework for developing HTTP application rapidly
 
 By Lei Cao
 http://github.com/lei-cao
 
-* Content
-- beego's router URI types
 
-* beego's router URI types
--- Basic routers
--- Parameter routers, Regex routers
+* What is a router?
 
-* Basic router
+In one sentence: finding the function to process the requested URI.
 
-Basic GET request
+URI and Processor Function/Method
 
-	beego.Get("/", func(ctx *context.Context){
-		ctx.Output.Body([]byte("hello world"))
+	GET     /v1/shop/nike  ShopController  Get
+	DELETE  /v1/shop/nike  ShopController  Delete
+	
+	GET     /v1/notallowed  notallowed function
+
+* beego's router processor function/methods types
+
+- Get(router string, f FilterFunc)
+- Post(router string, f FilterFunc)
+- Delete(router string, f FilterFunc)
+- Put(router string, f FilterFunc)
+- Head(router string, f FilterFunc)
+- Options(router string, f FilterFunc)
+- Patch(router string, f FilterFunc)
+- Any(router string, f FilterFunc)
+
+- Router(router string, c ControllerInterface, mappingMethods ...string)
+- Handler(router string, h http.Handler)
+
+* beego's router URI patterns
+-- Fixed router
+-- Parameter router, Regex router
+
+* Fixed router
+
+
+	// Fixed Router
+	beego.Get("/fixed", func(ctx *context.Context) {
+		json := "Fixed Router"
+
+		ctx.Output.Json(json, true, true)
 	})
 
-Basic POST request
-
-	beego.Post("/foo", func(ctx *context.Context){
-		ctx.Output.Body([]byte("bar"))
-	})
-
-Any HTTP request
-
-	beego.Any("/alice", func(ctx *context.Context){
-		ctx.Output.Body([]byte("bob"))
-	})	
-		
 
 * Parameter routers, Regex routers
 This parameter router suits for function and Controller. The parameters can be got from ctx.Input.Param()
 
-beego inspired by sinatra's router:
+beego's routing is inspired by sinatra's router:
 
-- beego.Router("/api/:id", &controllers.RController{})
+- beego.Get("/para1/:id", func(ctx *context.Context) { })
+	Default matching  //matching /para1/123    :id = 123  also matching /para1/
 
-	Default matching  //matching /api/123    :id = 123  also matching /api/
-	
-- beego.Router("/api/:id!", &controllers.RController{})
+- beego.Get("/para2/:id!", func(ctx *context.Context) { })
+	Default matching  //matching /para2/123    :id = 123  doesn't match /para2/
 
-	Default matching  //matching /api/123    :id = 123  doesn't match /api/
 
-- beego.Router("/api/:id([0-9]+)", &controllers.RController{})
+* Parameter routers, Regex routers
+- beego.Get("/para3-1/:all", func(ctx *context.Context) { })
+	Full matching //matching /para3/path/to/123.html :all= path/to/123.html
 
-	Regex matching //matching /api/123
+- beego.Get("/para3-2/*", func(ctx *context.Context) { })
+	full matching //matching /para3-2/path/to/123.html :splat=path/to/123.html
 
 * Parameter routers, Regex routers
 
-- beego.Router("/news/:all", &controllers.RController{})
+- beego.Get("/regex1-1/:id([0-9]+)", func(ctx *context.Context) { })
+	Regex matching //matching /regex1-1/123
 
-	Full matching //matching /news/path/to/123.html :all= path/to/123.html
-
-- beego.Router("/user/:username([\w]+)", &controllers.RController{})
-
-	Regex string matching //matching /user/astaxie :username = astaxie
-
-- beego.Router("/download/*.*", &controllers.RController{})
-
-	* matching //matching /download/file/api.xml :path= file/api :ext=xml
-
-- beego.Router("/download/*", &controllers.RController{})
-
-	* full matching //matching /download/file/api.json :splat=file/api.json
-
-* Parameter routers, Regex routers
-
-- beego.Router("/:id:int", &controllers.RController{})
-
+- beego.Get("/regex1-2/:id:int", func(ctx *context.Context) { })
 	int type, matching :id is int type, same as regex ([0-9]+)
 
-- beego.Router("/:hi:string", &controllers.RController{})
+* Parameter routers, Regex routers
+- beego.Get(`/regex2-1/:username([\w]+)`, func(ctx *context.Context) { })
+	Regex string matching //matching /regex2-1/astaxie :username = astaxie
 
+- beego.Get("/regex2-2/:username:string", func(ctx *context.Context) { })
 	string type, matching :hi is string type。same as ([\w]+)
 
-- beego.Router("/cms_:id([0-9]+).html", &controllers.CmsController{})
+* Parameter routers, Regex routers
+- beego.Get("/regex3/*.*", func(ctx *context.Context) { })
+	matching //matching /regex3/file/api.xml :path= file/api :ext=xml
+    ** The issue I was facing in the video has been fixed in `beego` develop branch **
 
-	custom regex with prefix //matching :id is regex type, matching cms_123.html, :id = 123
+.link https://github.com/astaxie/beego/commit/3f7e91e6a40edc57596d4d6aa18fb7be1e0cbabb Fix `*.*` bug
+
+- beego.Get("/pre_:id([0-9]+).html", func(ctx *context.Context) { })
+	custom regex with prefix //matching :id is regex type, matching pre_123.html, :id = 123

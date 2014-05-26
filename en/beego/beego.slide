@@ -32,9 +32,21 @@ The reason is *beego* suits for any kinds of http services: api services, web ba
 
 * bee as the scaffolding for developing beego projects
 
-  go get github.com/beego/bee
+    go get github.com/beego/bee
 
-`bee new` to create a web project
+
+    new         create an application base on beego framework
+    run         run the app which can hot compile
+    pack        compress an beego project
+    api         create an api application base on beego framework
+    router      auto-generate routers for the app controllers
+    test        test the app
+    bale        packs non-Go files to Go source files
+
+
+*  `bee new` to create a web project
+
+Beego project Structue 
 
   cd $GOPATH/src
   bee new app
@@ -53,10 +65,8 @@ The reason is *beego* suits for any kinds of http services: api services, web ba
   │   └── default_test.go
   ├── main.go
 
-* 
 
-`bee run` to run, watch and auto build project
-
+* `bee run` to run, watch and auto build project
 Config file bee.json can suit for any Go project such as martini project
 
   $ bee run
@@ -71,13 +81,7 @@ Config file bee.json can suit for any Go project such as martini project
   14-03-26 02:10:01 [INFO] ./app is running...
   2014/03/26 02:10:01 [I] Running on :8080
 
-  new         create an application base on beego framework
-  run         run the app which can hot compile
-  pack        compress an beego project
-  api         create an api application base on beego framework
-  router      auto-generate routers for the app controllers
-  test        test the app
-  bale        packs non-Go files to Go source files
+
 
 
 * Beego architecture
@@ -346,7 +350,7 @@ Get the configs of some section
   [demo]
   port = 80
 
-  iniconf.String("demo::port")
+  iniconf.Int("demo::port")
 
 * Logs
 
@@ -358,7 +362,7 @@ Supporting different kinds of logs: console, conn, file, smtp
 
 Supporting different kinds of `Session` engine:
 
-  memory, cookie, couchbase, file, redis, mysql, postgres
+  memory, memcache, cookie, couchbase, file, redis, mysql, postgres
 
 After `Session` enabled:
 
@@ -393,6 +397,7 @@ Head(url string)
 - Supporting HTTPS request
 - Supporting timeout
 - Supporting request parameters
+- Supporting file uploading
 
 * toolbox
 

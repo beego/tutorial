@@ -8,8 +8,8 @@ http://github.com/lei-cao
 - namespace
 - How to plan and organize routers
 
-* namespace之示例
-这个我主要是看了两个框架sintra和laravel的使用方式之后进行的设计和开发
+* namespace
+The namespace is inspired by sintra and laravel
 
 	ns := beego.NewNamespace("/v1").
 		Filter("before", auth).
@@ -26,23 +26,23 @@ http://github.com/lei-cao
 			}),
 		)
 
-* namespace之接口详解一
+* namespace API
 
 - NewNamespace(prefix string)
 
-	初始化namespace对象,下面这些函数都是namespace对象的方法
+	Create a `namespace` object
+
+- namespace contains these methods:
 
 - Cond(cond namespaceCond)  
 
-	支持满足条件的就执行该namespace,不满足就不执行,例如你可以根据域名来控制namespace
+	Set up the `Condition`, if the conditions are satisfied then process the namespace
 	
 - Filter(action string, filter FilterFunc)
 
-	action表示你需要执行的位置,before和after分别表示执行逻辑之前和执行逻辑之后的filter
-	
-- Router(rootpath string, c ControllerInterface, mappingMethods ...string)
+	`action` decide when to run the filter, it can be 'before' or 'after'
 
-* namespace之接口详解二
+* namespace API
 		
 - AutoRouter(c ControllerInterface)
 - AutoPrefix(prefix string, c ControllerInterface)
@@ -54,12 +54,13 @@ http://github.com/lei-cao
 - Options(rootpath string, f FilterFunc)
 - Patch(rootpath string, f FilterFunc)
 - Any(rootpath string, f FilterFunc)
+- Router(rootpath string, c ControllerInterface, mappingMethods ...string)
 - Handler(rootpath string, h http.Handler)
 
-	上面这些都是设置路由的函数,详细的使用和前面beego的路由函数是一样的
+	All these functioins in normal router you can also use in `namespace`
 	
-* namespace之接口详解三
-嵌套其他namespace
+* namespace API
+Nested namespaces
 
 - Namespace(ns *Namespace)
 
@@ -78,9 +79,9 @@ http://github.com/lei-cao
 					ctx.Output.Body([]byte("crminfo"))
 			}),
 		)
-* 如何规划项目的路由
-- 简单的应用采用routers/router.go
-- 多模块的采用namespace，然后引用的地方注册
+* Organizing project's routing
+- For small project can just set routers in `routers/router.go`
+- For multi-modules big project, use `namespace` and register the router while importing the module
 
 	beego.AddNamespce(ns)
 	

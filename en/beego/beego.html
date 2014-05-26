@@ -113,12 +113,30 @@
         <h3>bee as the scaffolding for developing beego projects</h3>
         
   
-  <div class="code"><pre>go get github.com/beego/bee</pre></div>
+  <div class="code"><pre>go get github.com/beego/bee
+
+
+new         create an application base on beego framework
+run         run the app which can hot compile
+pack        compress an beego project
+api         create an api application base on beego framework
+router      auto-generate routers for the app controllers
+test        test the app
+bale        packs non-Go files to Go source files</pre></div>
   
 
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3> `bee new` to create a web project</h3>
+        
   
   <p>
-    `bee new` to create a web project
+    Beego project Structue 
   </p>
   
 
@@ -148,14 +166,8 @@ app
   
       <article>
       
-        <h3></h3>
+        <h3>`bee run` to run, watch and auto build project</h3>
         
-  
-  <p>
-    `bee run` to run, watch and auto build project
-  </p>
-  
-
   
   <p>
     Config file bee.json can suit for any Go project such as martini project
@@ -173,15 +185,7 @@ app
 14-03-26 02:10:01 [SUCC] Build was successful
 14-03-26 02:10:01 [INFO] Restarting app ...
 14-03-26 02:10:01 [INFO] ./app is running...
-2014/03/26 02:10:01 [I] Running on :8080
-
-new         create an application base on beego framework
-run         run the app which can hot compile
-pack        compress an beego project
-api         create an api application base on beego framework
-router      auto-generate routers for the app controllers
-test        test the app
-bale        packs non-Go files to Go source files</pre></div>
+2014/03/26 02:10:01 [I] Running on :8080</pre></div>
   
 
       
@@ -787,7 +791,7 @@ if err != nil {
   <div class="code"><pre>[demo]
 port = 80
 
-iniconf.String(&#34;demo::port&#34;)</pre></div>
+iniconf.Int(&#34;demo::port&#34;)</pre></div>
   
 
       
@@ -850,7 +854,7 @@ iniconf.String(&#34;demo::port&#34;)</pre></div>
   
 
   
-  <div class="code"><pre>memory, cookie, couchbase, file, redis, mysql, postgres</pre></div>
+  <div class="code"><pre>memory, memcache, cookie, couchbase, file, redis, mysql, postgres</pre></div>
   
 
   
@@ -966,6 +970,8 @@ this.SetSession(key, value)</pre></div>
     <li>Supporting timeout</li>
   
     <li>Supporting request parameters</li>
+  
+    <li>Supporting file uploading</li>
   
   </ul>
 
