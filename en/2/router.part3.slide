@@ -1,30 +1,26 @@
-Beego Framework Tutorials - 2 - Routing (part 3 of 3)
+Beego Framework Tutorials - 2 - Routing Namespace (part 3 of 3)
 A Go HTTP framework for developing HTTP application rapidly
 
 By Lei Cao
 http://github.com/lei-cao
 
 * Content
-- namespace
+- `namespace` in routing system
 - How to plan and organize routers
 
 * namespace
 The namespace is inspired by sintra and laravel
 
 	ns := beego.NewNamespace("/v1").
+		Cond(func(ctx *context.Context) bool {
+		return true
+	}).
 		Filter("before", auth).
-		Get("/notallowed", func(ctx *context.Context) {
-			ctx.Output.Body([]byte("notAllowed"))
-		}).
-		Router("/version", &AdminController{}, "get:ShowAPIVersion").
-		Router("/changepassword", &UserController{}).
-		Namespace(
-			beego.NewNamespace("/shop").
-				Filter("before", sentry).
-				Get("/:id", func(ctx *context.Context) {
-					ctx.Output.Body([]byte("notAllowed"))
-			}),
-		)
+		Get("/fixed", func(ctx *context.Context) {
+		ctx.WriteString("/v1/fixed")
+	})
+
+	beego.AddNamespace(ns)
 
 * namespace API
 

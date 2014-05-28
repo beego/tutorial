@@ -13,7 +13,7 @@ We will teach you Beego's every components, the code logic and how to use Beego'
 
 [Beego Framework Tutorials - 2 - Routing URI Patterns (part 2 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part2.slide) Video: [Youtube](http://www.youtube.com/watch?v=81kxo6FcoOw)
 
-[Beego Framework Tutorials - 2 - Routing (part 3 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part3.slide)
+[Beego Framework Tutorials - 2 - Routing Namespace(part 3 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part3.slide) Video: [Youtube](http://youtu.be/W9tBcTcXGeo)
 
 Beego Framework Tutorials - 3 - Accessing Parameters
 
