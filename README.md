@@ -4,7 +4,7 @@
 
 ## Introduction
 
-After releasing Beego 1.2 we wanted to create some tutorial resources to expand on the official [Beego](http://beego.me/docs/intro/) documentation.
+After releasing [Beego](http://beego.me/) 1.2 we wanted to create some tutorial resources to expand on the official [Beego](http://beego.me/docs/intro/) documentation.
 
 Step by step tutorials are an easy way for new beginners to learn so we decided to put together a series of video tutorials and slides that cover all of Beego's components, modules, and code logic. We will also demonstrate how to develop API services and web applications.
 
