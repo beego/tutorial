@@ -1,0 +1,611 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego入门教程之四——控制器</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego入门教程之四——控制器</h1>
+        <h3>一个快速开发 Go 应用的 HTTP 框架</h3>
+        <h3>26 May 2014</h3>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    astaxie
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>大纲</h3>
+        
+  <ul>
+  
+    <li>控制器的设计</li>
+  
+    <li>控制器的执行逻辑</li>
+  
+    <li>控制器的高级应用</li>
+  
+    <li>请求数据处理</li>
+  
+    <li>XSRF 过滤</li>
+  
+    <li>session 控制</li>
+  
+    <li>flash 数据</li>
+  
+    <li>多种格式数据输出</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>控制器如何定义	</h3>
+        
+  
+  <div class="code"><pre>type xxxController struct {
+    beego.Controller
+}
+
+func (this *MainController) Get() {
+    this.Data[&#34;Website&#34;] = &#34;beego.me&#34;
+    this.Data[&#34;Email&#34;] = &#34;astaxie@gmail.com&#34;
+    this.TplNames = &#34;index.tpl&#34;
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>控制器的设计</h3>
+        
+  
+  <p>
+    控制器主要是利用了struct的匿名包含，我们上一课讲了路由，路由的第二个参数就是初始化的Controller。
+  </p>
+  
+
+  
+  <p>
+    那么controller到底是什么呢？ 他本质上是一个interface：
+  </p>
+  
+
+  
+  <div class="code"><pre>type ControllerInterface interface {
+    Init(ct *context.Context, controllerName, actionName string, app interface{})
+    Prepare()
+    Get()
+    Post()
+    Delete()
+    Put()
+    Head()
+    Patch()
+    Options()
+    Finish()
+    Render() error
+    XsrfToken() string
+    CheckXsrfCookie() bool
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>控制器的执行逻辑</h3>
+        
+<div class="image">
+  <img src="controller.jpg">
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>控制器可以利用的函数</h3>
+        
+  <ul>
+  
+    <li>func (c *Controller) Abort(code string)</li>
+  
+    <li>func (c *Controller) CheckXsrfCookie() bool</li>
+  
+    <li>func (c *Controller) DelSession(name interface{})</li>
+  
+    <li>func (c *Controller) Delete()</li>
+  
+    <li>func (c *Controller) DestroySession()</li>
+  
+    <li>func (c *Controller) Finish()</li>
+  
+    <li>func (c *Controller) Get()</li>
+  
+    <li>func (c *Controller) GetBool(key string) (bool, error)</li>
+  
+    <li>func (c *Controller) GetControllerAndAction() (controllerName, actionName string)</li>
+  
+    <li>func (c *Controller) GetFile(key string) (multipart.File, *multipart.FileHeader, error)</li>
+  
+  </ul>
+<p class="link"><a href="https://godoc.org/github.com/astaxie/beego" target="_blank">godoc.org/github.com/astaxie/beego</a></p>
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>控制器的简单例子</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">type AddController struct {</span>
+<span num="2">    beego.Controller</span>
+<span num="3">}</span>
+<span num="4"></span>
+<span num="5">func (this *AddController) Get() {</span>
+<span num="6">    this.Data[&#34;content&#34;] = &#34;value&#34;</span>
+<span num="7">    this.Layout = &#34;admin/layout.html&#34;</span>
+<span num="8">    this.TplNames = &#34;admin/add.tpl&#34;</span>
+<span num="9">}</span>
+<span num="10"></span>
+<span num="11">func (this *AddController) Post() {</span>
+<span num="12">    pkgname := this.GetString(&#34;pkgname&#34;)</span>
+<span num="13">    content := this.GetString(&#34;content&#34;)</span>
+<span num="14">    pk := models.GetCruPkg(pkgname)</span>
+<span num="15">    if pk.Id == 0 {</span>
+<span num="16">        var pp models.PkgEntity</span>
+<span num="17">        pp.Pid = 0</span>
+<span num="18">        pp.Pathname = pkgname</span>
+<span num="19">        pp.Intro = pkgname</span>
+<span num="20">        models.InsertPkg(pp)</span>
+<span num="21">        pk = models.GetCruPkg(pkgname)</span>
+<span num="22">    }</span>
+<span num="23">    var at models.Article</span>
+<span num="24">    at.Pkgid = pk.Id</span>
+<span num="25">    at.Content = content</span>
+<span num="26">    models.InsertArticle(at)</span>
+<span num="27">    this.Ctx.Redirect(302, &#34;/admin/index&#34;)</span>
+<span num="28">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>控制器的高级应用</h3>
+        
+  <ul>
+  
+    <li>设计基类</li>
+  
+    <li>基类调用父类</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>设计基类</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">type baseController struct {</span>
+<span num="2">    beego.Controller</span>
+<span num="3">    i18n.Locale</span>
+<span num="4">    user    models.User</span>
+<span num="5">    isLogin bool</span>
+<span num="6">}</span>
+<span num="7"></span>
+<span num="8">// Prepare implemented Prepare method for baseRouter.</span>
+<span num="9">func (this *baseController) Prepare() {</span>
+<span num="10">    // page start time</span>
+<span num="11">    this.Data[&#34;PageStartTime&#34;] = time.Now()</span>
+<span num="12">    // Setting properties.</span>
+<span num="13">    this.Data[&#34;AppDescription&#34;] = utils.AppDescription</span>
+<span num="14">    this.Data[&#34;AppKeywords&#34;] = utils.AppKeywords</span>
+<span num="15">    this.Data[&#34;AppName&#34;] = utils.AppName</span>
+<span num="16">    this.Data[&#34;AppVer&#34;] = utils.AppVer</span>
+<span num="17">    this.Data[&#34;AppUrl&#34;] = utils.AppUrl</span>
+<span num="18">    this.Data[&#34;AppLogo&#34;] = utils.AppLogo</span>
+<span num="19">    this.Data[&#34;AvatarURL&#34;] = utils.AvatarURL</span>
+<span num="20">    this.Data[&#34;IsProMode&#34;] = utils.IsProMode</span>
+<span num="21">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>其他类的设计</h3>
+        
+  
+  <div class="code"><pre>type BaseAdminController struct {
+    baseController
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>基类调用父类初始化</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">type BaseAdminController struct {</span>
+<span num="2">    baseController</span>
+<span num="3">}</span>
+<span num="4"></span>
+<span num="5">func (this *BaseAdminController) NestPrepare() {</span>
+<span num="6">    if this.CheckActiveRedirect() {</span>
+<span num="7">            return</span>
+<span num="8">    }</span>
+<span num="9">    // if user isn&#39;t admin, then logout user</span>
+<span num="10">    if !this.user.IsAdmin {</span>
+<span num="11">            models.LogoutUser(&amp;this.Controller)</span>
+<span num="12"></span>
+<span num="13">            // write flash message</span>
+<span num="14">            this.FlashWrite(&#34;NotPermit&#34;, &#34;true&#34;)</span>
+<span num="15"></span>
+<span num="16">            this.Redirect(&#34;/login&#34;, 302)</span>
+<span num="17">            return</span>
+<span num="18">    }</span>
+<span num="19">    // current in admin page</span>
+<span num="20">    this.Data[&#34;IsAdmin&#34;] = true</span>
+<span num="21">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>修改基类如下</h3>
+        
+  <div class="code" contenteditable="true" spellcheck="false">
+
+
+<pre><span num="1">type NestPreparer interface {</span>
+<span num="2">        NestPrepare()</span>
+<span num="3">}</span>
+<span num="4"></span>
+<span num="5">func (this *baseController) Prepare() {</span>
+<span num="6"></span>
+<span num="7">        // page start time</span>
+<span num="8">        this.Data[&#34;PageStartTime&#34;] = time.Now()</span>
+<span num="9"></span>
+<span num="10">        // Setting properties.</span>
+<span num="11">        this.Data[&#34;AppDescription&#34;] = utils.AppDescription</span>
+<span num="12">        this.Data[&#34;AppKeywords&#34;] = utils.AppKeywords</span>
+<span num="13">        this.Data[&#34;AppName&#34;] = utils.AppName</span>
+<span num="14">        this.Data[&#34;AppVer&#34;] = utils.AppVer</span>
+<span num="15">        this.Data[&#34;AppUrl&#34;] = utils.AppUrl</span>
+<span num="16">        this.Data[&#34;AppLogo&#34;] = utils.AppLogo</span>
+<span num="17">        this.Data[&#34;AvatarURL&#34;] = utils.AvatarURL</span>
+<span num="18">        this.Data[&#34;IsProMode&#34;] = utils.IsProMode</span>
+<span num="19"></span>
+<span num="20">        if app, ok := this.AppController.(NestPreparer); ok {</span>
+<span num="21">                app.NestPrepare()</span>
+<span num="22">        }</span>
+<span num="23">}</span>
+</pre>
+
+
+</div>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>请求数据处理</h3>
+        
+  <ul>
+  
+    <li>GetString(key string) string</li>
+  
+    <li>GetStrings(key string) []string</li>
+  
+    <li>GetInt(key string) (int64, error)</li>
+  
+    <li>GetBool(key string) (bool, error)</li>
+  
+    <li>GetFloat(key string) (float64, error)</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>请求数据requestbody</h3>
+        
+  
+  <p>
+    copyrequestbody = true
+  </p>
+  
+
+  
+  <div class="code"><pre>func (this *ObejctController) Post() {
+    var ob models.Object
+    json.Unmarshal(this.Ctx.Input.RequestBody, &amp;ob)
+    objectid := models.AddOne(ob)
+    this.Data[&#34;json&#34;] = &#34;{\&#34;ObjectId\&#34;:\&#34;&#34; &#43; objectid &#43; &#34;\&#34;}&#34;
+    this.ServeJson()
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>请求数据处理之文件上传处理</h3>
+        
+  
+  <p>
+    Beego 提供了两个很方便的方法来处理文件上传：
+  </p>
+  
+
+  <ul>
+  
+    <li>GetFile(key string) (multipart.File, *multipart.FileHeader, error)</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>该方法主要用于用户读取表单中的文件名 the_file，然后返回相应的信息，用户根据这些变量来处理文件上传：过滤、保存文件等。</pre></div>
+  
+
+  <ul>
+  
+    <li>SaveToFile(fromfile, tofile string) error</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>该方法是在 GetFile 的基础上实现了快速保存的功能
+
+func (this *MainController) Post() {
+    this.SaveToFile(&#34;the_file&#34;,&#34;/var/www/uploads/uploaded_file.txt&#34;)
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>XSRF 过滤</h3>
+        
+  
+  <p>
+    enablexsrf = true
+<br>
+
+    xsrfkey = 61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o
+<br>
+
+    xsrfexpire = 3600   
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>session控制</h3>
+        
+  <ul>
+  
+    <li>SetSession(name string, value interface{})</li>
+  
+    <li>GetSession(name string) interface{}</li>
+  
+    <li>DelSession(name string)</li>
+  
+    <li>SessionRegenerateID()</li>
+  
+    <li>DestroySession()</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>func (this *MainController) Get() {
+    v := this.GetSession(&#34;asta&#34;)
+    if v == nil {
+        this.SetSession(&#34;asta&#34;, int(1))
+        this.Data[&#34;num&#34;] = 0
+    } else {
+        this.SetSession(&#34;asta&#34;, v.(int)&#43;1)
+        this.Data[&#34;num&#34;] = v.(int)
+    }
+    this.TplNames = &#34;index.tpl&#34;
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Flash数据应用</h3>
+        
+  
+  <p>
+    flash数据就是用来存储一次性的数据，主要用于Post/Redirect/Get 模式
+  </p>
+  
+
+  
+  <div class="code"><pre>// 显示设置信息
+func (c *MainController) Get() {
+    flash:=beego.ReadFromRequest(&amp;c.Controller)
+    if n,ok:=flash.Data[&#34;notice&#34;];ok{
+        //显示设置成功
+        c.TplNames = &#34;set_success.html&#34;
+    }else if n,ok=flash.Data[&#34;error&#34;];ok{
+        //显示错误
+        c.TplNames = &#34;set_error.html&#34;
+    }else{
+        // 不然默认显示设置页面
+        this.Data[&#34;list&#34;]=GetInfo()
+        c.TplNames = &#34;setting_list.html&#34;
+    }
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Flash数据设置</h3>
+        
+  
+  <div class="code"><pre>// 处理设置信息
+func (c *MainController) Post() {
+    flash:=beego.NewFlash()
+    setting:=Settings{}
+    valid := Validation{}
+    c.ParseForm(&amp;setting)
+    if b, err := valid.Valid(setting);err!=nil {
+        flash.Error(&#34;Settings invalid!&#34;)
+        flash.Store(&amp;c.Controller)
+        c.Redirect(&#34;/setting&#34;,302)
+        return
+    }else if b!=nil{
+        flash.Error(&#34;validation err!&#34;)
+        flash.Store(&amp;c.Controller)
+        c.Redirect(&#34;/setting&#34;,302)
+        return
+    }   
+    saveSetting(setting)
+    flash.Notice(&#34;Settings saved!&#34;)
+    flash.Store(&amp;c.Controller)
+    c.Redirect(&#34;/setting&#34;,302)
+}</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>多种格式数据输出</h3>
+        
+  <ul>
+  
+    <li>ServeJson</li>
+  
+    <li>ServeXml</li>
+  
+    <li>ServeJsonp</li>
+  
+    <li>ServeFormatted</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    astaxie
+  </p>
+  
+<p class="link"><a href="http://github.com/astaxie" target="_blank">http://github.com/astaxie</a></p><p class="link"><a href="http://weibo.com/533452688" target="_blank">http://weibo.com/533452688</a></p><p class="link"><a href="http://twitter.com/astaxie" target="_blank">http://twitter.com/astaxie</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>

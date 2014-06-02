@@ -1,0 +1,211 @@
+Beego入门教程之四——控制器
+一个快速开发 Go 应用的 HTTP 框架
+01:00 26 May 2014
+Tags: beego
+
+astaxie
+http://github.com/astaxie
+http://weibo.com/533452688
+http://twitter.com/astaxie
+
+* 大纲
+- 控制器的设计
+- 控制器的执行逻辑
+- 控制器的高级应用
+- 请求数据处理
+- XSRF 过滤
+- session 控制
+- flash 数据
+- 多种格式数据输出
+
+* 控制器如何定义	
+
+	type xxxController struct {
+	    beego.Controller
+	}
+
+	func (this *MainController) Get() {
+		this.Data["Website"] = "beego.me"
+		this.Data["Email"] = "astaxie@gmail.com"
+		this.TplNames = "index.tpl"
+	}
+
+* 控制器的设计
+控制器主要是利用了struct的匿名包含，我们上一课讲了路由，路由的第二个参数就是初始化的Controller。
+
+那么controller到底是什么呢？ 他本质上是一个interface：
+
+	type ControllerInterface interface {
+		Init(ct *context.Context, controllerName, actionName string, app interface{})
+		Prepare()
+		Get()
+		Post()
+		Delete()
+		Put()
+		Head()
+		Patch()
+		Options()
+		Finish()
+		Render() error
+		XsrfToken() string
+		CheckXsrfCookie() bool
+	}
+
+* 控制器的执行逻辑
+
+.image controller.jpg
+
+* 控制器可以利用的函数
+
+- func (c *Controller) Abort(code string)
+- func (c *Controller) CheckXsrfCookie() bool
+- func (c *Controller) DelSession(name interface{})
+- func (c *Controller) Delete()
+- func (c *Controller) DestroySession()
+- func (c *Controller) Finish()
+- func (c *Controller) Get()
+- func (c *Controller) GetBool(key string) (bool, error)
+- func (c *Controller) GetControllerAndAction() (controllerName, actionName string)
+- func (c *Controller) GetFile(key string) (multipart.File, *multipart.FileHeader, error)
+
+.link https://godoc.org/github.com/astaxie/beego
+
+* 控制器的简单例子
+
+.code controller.go
+
+* 控制器的高级应用
+
+- 设计基类
+- 基类调用父类
+
+* 设计基类
+.code base.go
+
+* 其他类的设计
+
+	type BaseAdminController struct {
+	    baseController
+	}
+
+* 基类调用父类初始化
+
+.code parent.go
+
+* 修改基类如下
+
+.code base_call.go
+
+* 请求数据处理
+
+- GetString(key string) string
+- GetStrings(key string) []string
+- GetInt(key string) (int64, error)
+- GetBool(key string) (bool, error)
+- GetFloat(key string) (float64, error)
+
+* 请求数据requestbody
+
+copyrequestbody = true
+
+	func (this *ObejctController) Post() {
+	    var ob models.Object
+	    json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
+	    objectid := models.AddOne(ob)
+	    this.Data["json"] = "{\"ObjectId\":\"" + objectid + "\"}"
+	    this.ServeJson()
+	}
+
+* 请求数据处理之文件上传处理
+
+Beego 提供了两个很方便的方法来处理文件上传：
+
+- GetFile(key string) (multipart.File, *multipart.FileHeader, error)
+
+	该方法主要用于用户读取表单中的文件名 the_file，然后返回相应的信息，用户根据这些变量来处理文件上传：过滤、保存文件等。
+
+- SaveToFile(fromfile, tofile string) error
+
+	该方法是在 GetFile 的基础上实现了快速保存的功能
+	
+	func (this *MainController) Post() {
+	    this.SaveToFile("the_file","/var/www/uploads/uploaded_file.txt")
+	}
+
+* XSRF 过滤
+enablexsrf = true
+xsrfkey = 61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o
+xsrfexpire = 3600   
+
+
+* session控制
+
+- SetSession(name string, value interface{})
+- GetSession(name string) interface{}
+- DelSession(name string)
+- SessionRegenerateID()
+- DestroySession()
+
+	func (this *MainController) Get() {
+		v := this.GetSession("asta")
+		if v == nil {
+			this.SetSession("asta", int(1))
+			this.Data["num"] = 0
+		} else {
+			this.SetSession("asta", v.(int)+1)
+			this.Data["num"] = v.(int)
+		}
+		this.TplNames = "index.tpl"
+	}
+
+* Flash数据应用
+flash数据就是用来存储一次性的数据，主要用于Post/Redirect/Get 模式
+
+	// 显示设置信息
+	func (c *MainController) Get() {
+	    flash:=beego.ReadFromRequest(&c.Controller)
+	    if n,ok:=flash.Data["notice"];ok{
+	        //显示设置成功
+	        c.TplNames = "set_success.html"
+	    }else if n,ok=flash.Data["error"];ok{
+	        //显示错误
+	        c.TplNames = "set_error.html"
+	    }else{
+	        // 不然默认显示设置页面
+	        this.Data["list"]=GetInfo()
+	        c.TplNames = "setting_list.html"
+	    }
+	}
+
+* Flash数据设置
+
+	// 处理设置信息
+	func (c *MainController) Post() {
+	    flash:=beego.NewFlash()
+	    setting:=Settings{}
+	    valid := Validation{}
+	    c.ParseForm(&setting)
+	    if b, err := valid.Valid(setting);err!=nil {
+	        flash.Error("Settings invalid!")
+	        flash.Store(&c.Controller)
+	        c.Redirect("/setting",302)
+	        return
+	    }else if b!=nil{
+	        flash.Error("validation err!")
+	        flash.Store(&c.Controller)
+	        c.Redirect("/setting",302)
+	        return
+	    }   
+	    saveSetting(setting)
+	    flash.Notice("Settings saved!")
+	    flash.Store(&c.Controller)
+	    c.Redirect("/setting",302)
+	}
+
+
+* 多种格式数据输出
+- ServeJson
+- ServeXml
+- ServeJsonp
+- ServeFormatted
+
