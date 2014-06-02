@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Beego Framework Tutorials - 2 - Routing (part 3 of 3)</title>
+    <title>Beego Framework Tutorials - 2 - Routing Namespace (part 3 of 3)</title>
     <meta charset='utf-8'>
     <script src='static/slides.js'></script>
   </head>
@@ -12,7 +12,7 @@
     <section class='slides layout-widescreen'>
       
       <article>
-        <h1>Beego Framework Tutorials - 2 - Routing (part 3 of 3)</h1>
+        <h1>Beego Framework Tutorials - 2 - Routing Namespace (part 3 of 3)</h1>
         <h3>A Go HTTP framework for developing HTTP application rapidly</h3>
         
         
@@ -36,7 +36,7 @@
         
   <ul>
   
-    <li>namespace</li>
+    <li><code>namespace</code> in routing system</li>
   
     <li>How to plan and organize routers</li>
   
@@ -49,29 +49,25 @@
   
       <article>
       
-        <h3>namespace之示例</h3>
+        <h3>namespace</h3>
         
   
   <p>
-    这个我主要是看了两个框架sintra和laravel的使用方式之后进行的设计和开发
+    The namespace is inspired by sintra and laravel
   </p>
   
 
   
   <div class="code"><pre>ns := beego.NewNamespace(&#34;/v1&#34;).
+    Cond(func(ctx *context.Context) bool {
+    return true
+}).
     Filter(&#34;before&#34;, auth).
-    Get(&#34;/notallowed&#34;, func(ctx *context.Context) {
-        ctx.Output.Body([]byte(&#34;notAllowed&#34;))
-    }).
-    Router(&#34;/version&#34;, &amp;AdminController{}, &#34;get:ShowAPIVersion&#34;).
-    Router(&#34;/changepassword&#34;, &amp;UserController{}).
-    Namespace(
-        beego.NewNamespace(&#34;/shop&#34;).
-            Filter(&#34;before&#34;, sentry).
-            Get(&#34;/:id&#34;, func(ctx *context.Context) {
-                ctx.Output.Body([]byte(&#34;notAllowed&#34;))
-        }),
-    )</pre></div>
+    Get(&#34;/fixed&#34;, func(ctx *context.Context) {
+    ctx.WriteString(&#34;/v1/fixed&#34;)
+})
+
+beego.AddNamespace(ns)</pre></div>
   
 
       
@@ -81,7 +77,7 @@
   
       <article>
       
-        <h3>namespace之接口详解一</h3>
+        <h3>namespace API</h3>
         
   <ul>
   
@@ -90,8 +86,14 @@
   </ul>
 
   
-  <div class="code"><pre>初始化namespace对象,下面这些函数都是namespace对象的方法</pre></div>
+  <div class="code"><pre>Create a `namespace` object</pre></div>
   
+
+  <ul>
+  
+    <li>namespace contains these methods:</li>
+  
+  </ul>
 
   <ul>
   
@@ -100,7 +102,7 @@
   </ul>
 
   
-  <div class="code"><pre>支持满足条件的就执行该namespace,不满足就不执行,例如你可以根据域名来控制namespace</pre></div>
+  <div class="code"><pre>Set up the `Condition`, if the conditions are satisfied then process the namespace</pre></div>
   
 
   <ul>
@@ -110,14 +112,8 @@
   </ul>
 
   
-  <div class="code"><pre>action表示你需要执行的位置,before和after分别表示执行逻辑之前和执行逻辑之后的filter</pre></div>
+  <div class="code"><pre>`action` decide when to run the filter, it can be &#39;before&#39; or &#39;after&#39;</pre></div>
   
-
-  <ul>
-  
-    <li>Router(rootpath string, c ControllerInterface, mappingMethods ...string)</li>
-  
-  </ul>
 
       
       </article>
@@ -126,7 +122,7 @@
   
       <article>
       
-        <h3>namespace之接口详解二</h3>
+        <h3>namespace API</h3>
         
   <ul>
   
@@ -150,12 +146,14 @@
   
     <li>Any(rootpath string, f FilterFunc)</li>
   
+    <li>Router(rootpath string, c ControllerInterface, mappingMethods ...string)</li>
+  
     <li>Handler(rootpath string, h http.Handler)</li>
   
   </ul>
 
   
-  <div class="code"><pre>上面这些都是设置路由的函数,详细的使用和前面beego的路由函数是一样的</pre></div>
+  <div class="code"><pre>All these functioins in normal router you can also use in `namespace`</pre></div>
   
 
       
@@ -165,11 +163,11 @@
   
       <article>
       
-        <h3>namespace之接口详解三</h3>
+        <h3>namespace API</h3>
         
   
   <p>
-    嵌套其他namespace
+    Nested namespaces
   </p>
   
 
@@ -204,13 +202,13 @@
   
       <article>
       
-        <h3>如何规划项目的路由</h3>
+        <h3>Organizing project&#39;s routing</h3>
         
   <ul>
   
-    <li>简单的应用采用routers/router.go</li>
+    <li>For small project can just set routers in <code>routers/router.go</code></li>
   
-    <li>多模块的采用namespace，然后引用的地方注册</li>
+    <li>For multi-modules big project, use <code>namespace</code> and register the router while importing the module</li>
   
   </ul>
 

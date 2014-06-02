@@ -1,0 +1,230 @@
+Beego Framework Tutorials - 3 - Configuration Parameters
+A Go HTTP framework for developing HTTP application rapidly
+
+By Lei Cao
+http://github.com/lei-cao
+
+* Outline
+- Overview
+- The default configurations
+- app.conf
+- Custom parameters
+
+* Overview
+Beego has some dufault parameter configrations to let the beego project run without any parameter.
+
+
+* The default configurations
+
+- AppName
+  
+  Application name. it's beego by default. It's project_name if the application is created by `bee new project_name`
+
+- AppPath
+
+  Application path. It will get the first parameter of the executed command by `os.Args[0]`. So you need to execute by full path if you are using supervisor to manage processes.
+	
+- AppConfigPath
+
+  Application configuration file path. it's `conf/app.conf` by default.  You can change it to your own file.
+
+- EnableHttpListen
+
+  Enable http listen or not, enabled by default.
+
+* The default configurations
+
+- HttpAddr
+
+  Application listening address, empty by default which will listen all network adapter's IPs.
+
+- HttpPort
+
+  Application listening port, 8080 by default.
+	
+- EnableHttpTLS
+
+  Enable https or not, disabled by default.
+
+- HttpsPort
+
+  Application listening https port, 10443 by default.
+
+- HttpCertFile
+
+  If https is enabled, the path of certfile.
+
+* The default configurations
+
+- HttpKeyFile
+		
+  If https is enabled, the path of keyfile.
+
+- HttpServerTimeOut
+
+  Config the http timeout, 0 by default which means no timeout.
+	
+- RunMode
+
+  The application mode, dev by default. In dev mode it will show user friendly error pages.
+
+- AutoRender
+
+  Use auto render or not, true by default. Should set it to false for API application, no need to render template.
+
+- RecoverPanic
+
+  Recover from panic or not, true by default. It will recover from exceptions without exiting application.
+
+* The default configurations
+
+- ViewsPath
+
+  The path of templates, `views` by default.
+
+- SessionOn
+
+  Enable session or not, false by default.
+
+- SessionProvider
+
+  Session provider, memory by default.
+
+- SessionName
+
+  The session cookie name stored in browser. beegosessionID by default.
+
+- SessionGCMaxLifetime
+
+  Valide time of session, 3600s by default.
+
+* The default configurations
+
+- SessionSavePath
+
+  Session saving path, empty by default.
+
+- SessionHashFunc
+
+  SessionID generating Function, sha1 by default.
+
+- SessionHashKey
+
+  Hash key of session.
+	
+- SessionCookieLifeTime
+
+  The valid time of cookie in browser for seesion, 3600s by default.
+
+- UseFcgi
+
+  Enable fastcgi or not, false by default.
+
+* The default configurations
+
+- MaxMemory
+
+  Memory cache size for file uploading, `1 << 26`(64M) by default.
+
+- EnableGzip
+
+  Enable Gzip or not, false by default. If Gzip is enabled, the output of template will be compressed by Gzip or zlib according to `Accept-Encoding` of browser.
+
+- DirectoryIndex
+
+  Enable list static directory or not, disabled by default. It will return 403 error.
+	
+- BeegoServerName
+
+  Beego server will output `beego` as server name.
+	
+- EnableAdmin
+
+  Enable supervisor module or not, disabled by default.
+
+* The default configurations
+
+- AdminHttpAddr
+
+  Listening address of supervisor, `localhost` by default.
+
+- AdminHttpPort
+  Listening port of supervisor, 8088 by default.
+	
+- TemplateLeft
+
+  Left mark of template, `{{` by default.
+	
+- TemplateRight
+
+  Right mark of template, `}}` by default.
+	
+- ErrorsShow
+
+  Show error or not, show by default.
+
+* The default configurations
+
+- XSRFKEY
+
+  XSRF key, beegoxsrf by default.
+	
+- XSRFExpire
+
+  XSRF expire time, 0 by default.
+
+- FlashName
+
+  Flash Cookie name，default is `BEEGO_FLASH`
+
+- FlashSeperator
+
+  Flash data seperator，default is `BEEGOFLASH`
+
+- StaticDir
+
+  set the static file，default is `static`
+
+* About app.conf
+
+The key/value pairs defined in app.conf will overwrite the default configurations listed above. 
+
+	[section]
+	key = value
+
+	beego.AppConfig.Bool("key")
+	
+- Set(key, val string) error   
+- String(key string) string  
+- Strings(key string) []string
+- Int(key string) (int, error)
+- Int64(key string) (int64, error)
+- Bool(key string) (bool, error)
+- Float(key string) (float64, error)	
+
+* Custom parameters
+
+	;comment one
+	#comment two
+	appname = beeapi
+	httpport = 8080
+	mysqlport = 3600
+	PI = 3.1415976
+	runmode = "dev"
+	autorender = false
+	copyrequestbody = true
+	[demo]
+	key1="asta"
+	key2 = "xie"
+	CaseInsensitive = true
+	peers = one;two;three
+
+* Accessing custom parameters
+
+- beego.AppConfig.Bool("autorender")
+- beego.AppConfig.Float("PI")
+- beego.AppConfig.Int("mysqlport")
+- beego.AppConfig.String("appname")
+- beego.AppConfig.String("demo::key1")
+- beego.AppConfig.Bool("demo::CaseInsensitive")  
+- beego.AppConfig.Strings("demo::peers")    [one two three]

@@ -1,0 +1,641 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Beego Framework Tutorials - 3 - Configuration Parameters</title>
+    <meta charset='utf-8'>
+    <script src='static/slides.js'></script>
+  </head>
+
+  <body style='display: none'>
+
+    <section class='slides layout-widescreen'>
+      
+      <article>
+        <h1>Beego Framework Tutorials - 3 - Configuration Parameters</h1>
+        <h3>A Go HTTP framework for developing HTTP application rapidly</h3>
+        
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+
+          </div>
+        
+      </article>
+      
+  
+  
+      <article>
+      
+        <h3>Outline</h3>
+        
+  <ul>
+  
+    <li>Overview</li>
+  
+    <li>The default configurations</li>
+  
+    <li>app.conf</li>
+  
+    <li>Custom parameters</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Overview</h3>
+        
+  
+  <p>
+    Beego has some dufault parameter configrations to let the beego project run without any parameter.
+  </p>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>AppName</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Application name. it&#39;s beego by default. It&#39;s project_name if the application is created by `bee new project_name`</pre></div>
+  
+
+  <ul>
+  
+    <li>AppPath</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Application path. It will get the first parameter of the executed command by `os.Args[0]`. So you need to execute by full path if you are using supervisor to manage processes.</pre></div>
+  
+
+  <ul>
+  
+    <li>AppConfigPath</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Application configuration file path. it&#39;s `conf/app.conf` by default.  You can change it to your own file.</pre></div>
+  
+
+  <ul>
+  
+    <li>EnableHttpListen</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable http listen or not, enabled by default.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>HttpAddr</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Application listening address, empty by default which will listen all network adapter&#39;s IPs.</pre></div>
+  
+
+  <ul>
+  
+    <li>HttpPort</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Application listening port, 8080 by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>EnableHttpTLS</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable https or not, disabled by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>HttpsPort</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Application listening https port, 10443 by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>HttpCertFile</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>If https is enabled, the path of certfile.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>HttpKeyFile</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>If https is enabled, the path of keyfile.</pre></div>
+  
+
+  <ul>
+  
+    <li>HttpServerTimeOut</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Config the http timeout, 0 by default which means no timeout.</pre></div>
+  
+
+  <ul>
+  
+    <li>RunMode</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>The application mode, dev by default. In dev mode it will show user friendly error pages.</pre></div>
+  
+
+  <ul>
+  
+    <li>AutoRender</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Use auto render or not, true by default. Should set it to false for API application, no need to render template.</pre></div>
+  
+
+  <ul>
+  
+    <li>RecoverPanic</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Recover from panic or not, true by default. It will recover from exceptions without exiting application.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>ViewsPath</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>The path of templates, `views` by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionOn</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable session or not, false by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionProvider</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Session provider, memory by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionName</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>The session cookie name stored in browser. beegosessionID by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionGCMaxLifetime</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Valide time of session, 3600s by default.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>SessionSavePath</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Session saving path, empty by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionHashFunc</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>SessionID generating Function, sha1 by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionHashKey</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Hash key of session.</pre></div>
+  
+
+  <ul>
+  
+    <li>SessionCookieLifeTime</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>The valid time of cookie in browser for seesion, 3600s by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>UseFcgi</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable fastcgi or not, false by default.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>MaxMemory</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Memory cache size for file uploading, `1 &lt;&lt; 26`(64M) by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>EnableGzip</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable Gzip or not, false by default. If Gzip is enabled, the output of template will be compressed by Gzip or zlib according to `Accept-Encoding` of browser.</pre></div>
+  
+
+  <ul>
+  
+    <li>DirectoryIndex</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable list static directory or not, disabled by default. It will return 403 error.</pre></div>
+  
+
+  <ul>
+  
+    <li>BeegoServerName</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Beego server will output `beego` as server name.</pre></div>
+  
+
+  <ul>
+  
+    <li>EnableAdmin</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Enable supervisor module or not, disabled by default.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>AdminHttpAddr</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Listening address of supervisor, `localhost` by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>AdminHttpPort</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Listening port of supervisor, 8088 by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>TemplateLeft</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Left mark of template, `{{` by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>TemplateRight</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Right mark of template, `}}` by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>ErrorsShow</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Show error or not, show by default.</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>The default configurations</h3>
+        
+  <ul>
+  
+    <li>XSRFKEY</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>XSRF key, beegoxsrf by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>XSRFExpire</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>XSRF expire time, 0 by default.</pre></div>
+  
+
+  <ul>
+  
+    <li>FlashName</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Flash Cookie name，default is `BEEGO_FLASH`</pre></div>
+  
+
+  <ul>
+  
+    <li>FlashSeperator</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Flash data seperator，default is `BEEGOFLASH`</pre></div>
+  
+
+  <ul>
+  
+    <li>StaticDir</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>set the static file，default is `static`</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>About app.conf</h3>
+        
+  
+  <p>
+    The key/value pairs defined in app.conf will overwrite the default configurations listed above. 
+  </p>
+  
+
+  
+  <div class="code"><pre>[section]
+key = value
+
+beego.AppConfig.Bool(&#34;key&#34;)</pre></div>
+  
+
+  <ul>
+  
+    <li>Set(key, val string) error   </li>
+  
+    <li>String(key string) string  </li>
+  
+    <li>Strings(key string) []string</li>
+  
+    <li>Int(key string) (int, error)</li>
+  
+    <li>Int64(key string) (int64, error)</li>
+  
+    <li>Bool(key string) (bool, error)</li>
+  
+    <li>Float(key string) (float64, error)	</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Custom parameters</h3>
+        
+  
+  <div class="code"><pre>;comment one
+#comment two
+appname = beeapi
+httpport = 8080
+mysqlport = 3600
+PI = 3.1415976
+runmode = &#34;dev&#34;
+autorender = false
+copyrequestbody = true
+[demo]
+key1=&#34;asta&#34;
+key2 = &#34;xie&#34;
+CaseInsensitive = true
+peers = one;two;three</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Accessing custom parameters</h3>
+        
+  <ul>
+  
+    <li>beego.AppConfig.Bool(&#34;autorender&#34;)</li>
+  
+    <li>beego.AppConfig.Float(&#34;PI&#34;)</li>
+  
+    <li>beego.AppConfig.Int(&#34;mysqlport&#34;)</li>
+  
+    <li>beego.AppConfig.String(&#34;appname&#34;)</li>
+  
+    <li>beego.AppConfig.String(&#34;demo::key1&#34;)</li>
+  
+    <li>beego.AppConfig.Bool(&#34;demo::CaseInsensitive&#34;)  </li>
+  
+    <li>beego.AppConfig.Strings(&#34;demo::peers&#34;)    [one two three]</li>
+  
+  </ul>
+
+      
+      </article>
+  
+  
+
+      <article>
+        <h3>Thank you</h1>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    By Lei Cao
+  </p>
+  
+<p class="link"><a href="http://github.com/lei-cao" target="_blank">http://github.com/lei-cao</a></p>
+          </div>
+        
+      </article>
+
+  </body>
+  
+</html>

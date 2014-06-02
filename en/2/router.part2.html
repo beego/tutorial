@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Beego Framework Tutorials - 2 - Routing (part 2 of 3)</title>
+    <title>Beego Framework Tutorials - 2 - Routing URI Patterns (part 2 of 3)</title>
     <meta charset='utf-8'>
     <script src='static/slides.js'></script>
   </head>
@@ -12,7 +12,7 @@
     <section class='slides layout-widescreen'>
       
       <article>
-        <h1>Beego Framework Tutorials - 2 - Routing (part 2 of 3)</h1>
+        <h1>Beego Framework Tutorials - 2 - Routing URI Patterns (part 2 of 3)</h1>
         <h3>A Go HTTP framework for developing HTTP application rapidly</h3>
         
         
@@ -26,17 +26,77 @@
 
           </div>
         
+          <div class="presenter">
+            
+  
+  <p>
+    
+  </p>
+  
+
+          </div>
+        
       </article>
       
   
   
       <article>
       
-        <h3>Content</h3>
+        <h3>What is a router?</h3>
+        
+  
+  <p>
+    In one sentence: finding the function to process the requested URI.
+  </p>
+  
+
+  
+  <p>
+    URI and Processor Function/Method
+  </p>
+  
+
+  
+  <div class="code"><pre>GET     /v1/shop/nike  ShopController  Get
+DELETE  /v1/shop/nike  ShopController  Delete
+
+GET     /v1/notallowed  notallowed function</pre></div>
+  
+
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>beego&#39;s router processor function/methods types</h3>
         
   <ul>
   
-    <li>beego&#39;s router URI types</li>
+    <li>Get(router string, f FilterFunc)</li>
+  
+    <li>Post(router string, f FilterFunc)</li>
+  
+    <li>Delete(router string, f FilterFunc)</li>
+  
+    <li>Put(router string, f FilterFunc)</li>
+  
+    <li>Head(router string, f FilterFunc)</li>
+  
+    <li>Options(router string, f FilterFunc)</li>
+  
+    <li>Patch(router string, f FilterFunc)</li>
+  
+    <li>Any(router string, f FilterFunc)</li>
+  
+  </ul>
+
+  <ul>
+  
+    <li>Router(router string, c ControllerInterface, mappingMethods ...string)</li>
+  
+    <li>Handler(router string, h http.Handler)</li>
   
   </ul>
 
@@ -47,14 +107,14 @@
   
       <article>
       
-        <h3>beego&#39;s router URI types</h3>
+        <h3>beego&#39;s router URI patterns</h3>
         
   
   <p>
-    -- Basic routers
+    -- Fixed router
 <br>
 
-    -- Parameter routers, Regex routers
+    -- Parameter router, Regex router
   </p>
   
 
@@ -65,41 +125,14 @@
   
       <article>
       
-        <h3>Basic router</h3>
+        <h3>Fixed router</h3>
         
   
-  <p>
-    Basic GET request
-  </p>
-  
+  <div class="code"><pre>// Fixed Router
+beego.Get(&#34;/fixed&#34;, func(ctx *context.Context) {
+    json := &#34;Fixed Router&#34;
 
-  
-  <div class="code"><pre>beego.Get(&#34;/&#34;, func(ctx *context.Context){
-    ctx.Output.Body([]byte(&#34;hello world&#34;))
-})</pre></div>
-  
-
-  
-  <p>
-    Basic POST request
-  </p>
-  
-
-  
-  <div class="code"><pre>beego.Post(&#34;/foo&#34;, func(ctx *context.Context){
-    ctx.Output.Body([]byte(&#34;bar&#34;))
-})</pre></div>
-  
-
-  
-  <p>
-    Any HTTP request
-  </p>
-  
-
-  
-  <div class="code"><pre>beego.Any(&#34;/alice&#34;, func(ctx *context.Context){
-    ctx.Output.Body([]byte(&#34;bob&#34;))
+    ctx.Output.Json(json, true, true)
 })</pre></div>
   
 
@@ -120,38 +153,28 @@
 
   
   <p>
-    beego inspired by sinatra&#39;s router:
+    beego&#39;s routing is inspired by sinatra&#39;s router:
   </p>
   
 
   <ul>
   
-    <li>beego.Router(&#34;/api/:id&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Get(&#34;/para1/:id&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
   
-  <div class="code"><pre>Default matching  //matching /api/123    :id = 123  also matching /api/</pre></div>
+  <div class="code"><pre>Default matching  //matching /para1/123    :id = 123  also matching /para1/</pre></div>
   
 
   <ul>
   
-    <li>beego.Router(&#34;/api/:id!&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Get(&#34;/para2/:id!&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
   
-  <div class="code"><pre>Default matching  //matching /api/123    :id = 123  doesn&#39;t match /api/</pre></div>
-  
-
-  <ul>
-  
-    <li>beego.Router(&#34;/api/:id([0-9]+)&#34;, &amp;controllers.RController{})</li>
-  
-  </ul>
-
-  
-  <div class="code"><pre>Regex matching //matching /api/123</pre></div>
+  <div class="code"><pre>Default matching  //matching /para2/123    :id = 123  doesn&#39;t match /para2/</pre></div>
   
 
       
@@ -165,42 +188,22 @@
         
   <ul>
   
-    <li>beego.Router(&#34;/news/:all&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Get(&#34;/para3-1/:all&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
   
-  <div class="code"><pre>Full matching //matching /news/path/to/123.html :all= path/to/123.html</pre></div>
+  <div class="code"><pre>Full matching //matching /para3/path/to/123.html :all= path/to/123.html</pre></div>
   
 
   <ul>
   
-    <li>beego.Router(&#34;/user/:username([\w]+)&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Get(&#34;/para3-2/*&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
   
-  <div class="code"><pre>Regex string matching //matching /user/astaxie :username = astaxie</pre></div>
-  
-
-  <ul>
-  
-    <li>beego.Router(&#34;/download/\*.\*&#34;, &amp;controllers.RController{})</li>
-  
-  </ul>
-
-  
-  <div class="code"><pre>* matching //matching /download/file/api.xml :path= file/api :ext=xml</pre></div>
-  
-
-  <ul>
-  
-    <li>beego.Router(&#34;/download/*&#34;, &amp;controllers.RController{})</li>
-  
-  </ul>
-
-  
-  <div class="code"><pre>* full matching //matching /download/file/api.json :splat=file/api.json</pre></div>
+  <div class="code"><pre>full matching //matching /para3-2/path/to/123.html :splat=path/to/123.html</pre></div>
   
 
       
@@ -214,7 +217,17 @@
         
   <ul>
   
-    <li>beego.Router(&#34;/:id:int&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Get(&#34;/regex1-1/:id([0-9]+)&#34;, func(ctx *context.Context) { })</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Regex matching //matching /regex1-1/123</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Get(&#34;/regex1-2/:id:int&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
@@ -222,9 +235,28 @@
   <div class="code"><pre>int type, matching :id is int type, same as regex ([0-9]&#43;)</pre></div>
   
 
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers, Regex routers</h3>
+        
   <ul>
   
-    <li>beego.Router(&#34;/:hi:string&#34;, &amp;controllers.RController{})</li>
+    <li>beego.Get(`/regex2-1/:username([\w]+)`, func(ctx *context.Context) { })</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>Regex string matching //matching /regex2-1/astaxie :username = astaxie</pre></div>
+  
+
+  <ul>
+  
+    <li>beego.Get(&#34;/regex2-2/:username:string&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
@@ -232,14 +264,37 @@
   <div class="code"><pre>string type, matching :hi is string type。same as ([\w]&#43;)</pre></div>
   
 
+      
+      </article>
+  
+  
+  
+      <article>
+      
+        <h3>Parameter routers, Regex routers</h3>
+        
   <ul>
   
-    <li>beego.Router(&#34;/cms_:id([0-9]+).html&#34;, &amp;controllers.CmsController{})</li>
+    <li>beego.Get(&#34;/regex3/*.*&#34;, func(ctx *context.Context) { })</li>
   
   </ul>
 
   
-  <div class="code"><pre>custom regex with prefix //matching :id is regex type, matching cms_123.html, :id = 123</pre></div>
+  <div class="code"><pre>matching //matching /regex3/file/api.xml :path= file/api :ext=xml</pre></div>
+  
+
+  
+  <div class="code"><pre>** The issue I was facing in the video has been fixed in `beego` develop branch **</pre></div>
+  
+<p class="link"><a href="https://github.com/astaxie/beego/commit/3f7e91e6a40edc57596d4d6aa18fb7be1e0cbabb" target="_blank">Fix <code>*.*</code> bug</a></p>
+  <ul>
+  
+    <li>beego.Get(&#34;/pre_:id([0-9]+).html&#34;, func(ctx *context.Context) { })</li>
+  
+  </ul>
+
+  
+  <div class="code"><pre>custom regex with prefix //matching :id is regex type, matching pre_123.html, :id = 123</pre></div>
   
 
       
@@ -258,6 +313,16 @@
   </p>
   
 <p class="link"><a href="http://github.com/lei-cao" target="_blank">http://github.com/lei-cao</a></p>
+          </div>
+        
+          <div class="presenter">
+            
+  
+  <p>
+    
+  </p>
+  
+
           </div>
         
       </article>
