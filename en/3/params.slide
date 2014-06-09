@@ -18,15 +18,19 @@ Beego has some dufault parameter configrations to let the beego project run with
 
 - AppName
   
-  Application name. it's beego by default. It's project_name if the application is created by `bee new project_name`
+  Application name. it's beego by default. 
+  It's project_name if the application is created by `bee new project_name`
 
 - AppPath
 
-  Application path. It will get the first parameter of the executed command by `os.Args[0]`. So you need to execute by full path if you are using supervisor to manage processes.
+  Application path. 
+  It will get the first parameter of the executed command by `os.Args[0]`.
+  So you need to execute by full path if you are using supervisor to manage processes.
 	
 - AppConfigPath
 
-  Application configuration file path. it's `conf/app.conf` by default.  You can change it to your own file.
+  Application configuration file path. it's `conf/app.conf` by default.
+  You can change it to your own file.
 
 - EnableHttpListen
 
@@ -66,17 +70,21 @@ Beego has some dufault parameter configrations to let the beego project run with
 	
 - RunMode
 
-  The application mode, dev by default. In dev mode it will show user friendly error pages.
+  The application mode, dev by default. 
+  In dev mode it will show user friendly error pages.
 
 - AutoRender
 
-  Use auto render or not, true by default. Should set it to false for API application, no need to render template.
+  Use auto render or not, true by default. 
+  Should set it to false for API application, no need to render template.
+
+* The default configurations
 
 - RecoverPanic
 
-  Recover from panic or not, true by default. It will recover from exceptions without exiting application.
+  Recover from panic or not, true by default.
+  It will recover from exceptions without exiting application.
 
-* The default configurations
 
 - ViewsPath
 
@@ -94,11 +102,11 @@ Beego has some dufault parameter configrations to let the beego project run with
 
   The session cookie name stored in browser. beegosessionID by default.
 
+* The default configurations
+
 - SessionGCMaxLifetime
 
   Valide time of session, 3600s by default.
-
-* The default configurations
 
 - SessionSavePath
 
@@ -116,11 +124,12 @@ Beego has some dufault parameter configrations to let the beego project run with
 
   The valid time of cookie in browser for seesion, 3600s by default.
 
+* The default configurations
+
 - UseFcgi
 
   Enable fastcgi or not, false by default.
 
-* The default configurations
 
 - MaxMemory
 
@@ -128,7 +137,9 @@ Beego has some dufault parameter configrations to let the beego project run with
 
 - EnableGzip
 
-  Enable Gzip or not, false by default. If Gzip is enabled, the output of template will be compressed by Gzip or zlib according to `Accept-Encoding` of browser.
+  Enable Gzip or not, false by default.
+  If Gzip is enabled, the output of template will be compressed by Gzip or zlib 
+  according to `Accept-Encoding` of browser.
 
 - DirectoryIndex
 
@@ -137,12 +148,13 @@ Beego has some dufault parameter configrations to let the beego project run with
 - BeegoServerName
 
   Beego server will output `beego` as server name.
+
+* The default configurations
 	
 - EnableAdmin
 
   Enable supervisor module or not, disabled by default.
 
-* The default configurations
 
 - AdminHttpAddr
 
@@ -158,12 +170,16 @@ Beego has some dufault parameter configrations to let the beego project run with
 - TemplateRight
 
   Right mark of template, `}}` by default.
+
+* The default configurations
 	
 - ErrorsShow
 
   Show error or not, show by default.
 
-* The default configurations
+
+- EnableXSRF
+  Enable XSRF
 
 - XSRFKEY
 
@@ -172,6 +188,8 @@ Beego has some dufault parameter configrations to let the beego project run with
 - XSRFExpire
 
   XSRF expire time, 0 by default.
+
+* The default configurations
 
 - FlashName
 
@@ -184,6 +202,7 @@ Beego has some dufault parameter configrations to let the beego project run with
 - StaticDir
 
   set the static file，default is `static`
+
 
 * About app.conf
 
