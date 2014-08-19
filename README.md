@@ -11,10 +11,12 @@ Step by step tutorials are an easy way for new beginners to learn so we decided 
 ## Outline
 
 1. [Introduction to Beego](http://go-talks.appspot.com/github.com/beego/tutorial/en/1/why_beego.slide) Video: [Youtube](https://www.youtube.com/watch?v=zvXDgfoUKFY)
-1. - .1 [Routing (part 1 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part1.slide) Video: [Youtube](http://www.youtube.com/watch?v=LvAFH-oLvqY)
+1. 
+  - .1 [Routing (part 1 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part1.slide) Video: [Youtube](http://www.youtube.com/watch?v=LvAFH-oLvqY)
   - .2 [Routing URI Patterns (part 2 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part2.slide) Video: [Youtube](http://www.youtube.com/watch?v=81kxo6FcoOw)
   - .3 [Routing Namespace (part 3 of 3)](http://go-talks.appspot.com/github.com/beego/tutorial/en/2/router.part3.slide) Video: [Youtube](http://www.youtube.com/watch?v=W9tBcTcXGeo)
-  - . [Configuration Parameters](http://go-talks.appspot.com/github.com/beego/tutorial/en/3/params.slide) Video: [Youtube](http://www.youtube.com/watch?v=F3tieL1lX1I)
+
+1. [Configuration Parameters](http://go-talks.appspot.com/github.com/beego/tutorial/en/3/params.slide) Video: [Youtube](http://www.youtube.com/watch?v=F3tieL1lX1I)
 1. [bee api applicatioin](http://beego.me/blog/beego_api) Video: [Youtube](http://youtu.be/w7RziV_Sn-g)
 1. Controllers
 1. ORM
